@@ -57,8 +57,9 @@ class Hand:
 
 
 class Player:
-	def __init__(self, hand):
+	def __init__(self, hand, name):
 		self.hand = hand
+		self.name = name
 
 	def __str__(self):
 		return self.hand.__str__()
@@ -88,8 +89,7 @@ class Team:
 
 
 class Game:
-	def __init__(self, name, players=[]):
-		self.name = name
+	def __init__(self, players=[]):
 		self.player = players
 
 	def is_full(self):
