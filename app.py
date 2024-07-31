@@ -39,7 +39,10 @@ def rooms():
 @app.route("/find_rooms", methods=["GET", "POST"])
 def find_rooms():
     if request.method == "GET":
-        return jsonify({"processed": "true", "games": games.get_names()})
+        game_names = []
+        for game in games:
+            game_names.append(game.name)
+        return jsonify({"processed": "true", "games": game_names})
     else:
         info = request.get_json()
         creator = info[0]
@@ -49,6 +52,15 @@ def find_rooms():
                 return jsonify({"processed": "true", "error": "Name already exists"}), 400
         games.append(fish.Game(room_name))
         return jsonify({"processed": "true"})
+    
+@app.route("/create_room")
+def create_room():
+    return render_template("create_room.html")
+
+@app.route("/game")
+def game_function():
+    return render_template("game.html")
+#!TODO Need to make game.html file
 
 # Runs the app
 if __name__ == "__main__":
