@@ -9,7 +9,8 @@ function join_game() {
         contentType: "application/json",
         dataType: 'json',
         success: function() {
-            window.location.replace("/rooms")
+            localStorage.setItem("name", name);
+            window.location.replace("/rooms");
         },
         error: function(xhr, status, error) {
             alert("Name already in use");

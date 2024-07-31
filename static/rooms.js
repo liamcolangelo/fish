@@ -21,7 +21,7 @@ rooms.then(function(data) {
         const input = document.createElement('input');
         input.type = 'radio';
         input.id = room_names[i];
-        input.name = 'language';
+        input.name = 'roomName';
         input.value = room_names[i];
 
         const label = document.createElement('label');
@@ -36,4 +36,10 @@ rooms.then(function(data) {
 
 document.getElementById("create room").addEventListener("click", function () {
     window.location.href = "/create_room";
+});
+
+document.getElementById("dynamic-form").addEventListener("submit", function (event) {
+    event.preventDefault();
+    const selectedValue = document.querySelector("input[name='roomName']:checked").value;
+    window.location.replace("/game");
 });
