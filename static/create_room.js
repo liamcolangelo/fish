@@ -11,6 +11,7 @@ document.getElementById("submit").addEventListener("click", function() {
         dataType: "json",
         success: function () {
             localStorage.setItem("room", room_name);
+            localStorage.setItem("creator", true);
             window.location.replace("/game");
         },
         error: function(xhr, status, error) {

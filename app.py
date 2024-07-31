@@ -8,7 +8,7 @@ app = Flask(__name__, template_folder="templates")
 # Each key for players is the player's chosen name, the value is when they signed in.
 # This way, names can be freed after a certain time, or when their game ends.
 players = {}
-games = []
+games = {}
 
 # The home page for the game where they choose their name and begin the game
 @app.route("/")
@@ -50,17 +50,36 @@ def find_rooms():
         for game in games:
             if game.name == room_name:
                 return jsonify({"processed": "true", "error": "Name already exists"}), 400
-        games.append(fish.Game(room_name))
+        games[creator] = fish.Game(room_name, [creator])
         return jsonify({"processed": "true"})
     
 @app.route("/create_room")
 def create_room():
     return render_template("create_room.html")
 
-@app.route("/game")
+@app.route("/waiting", methods=["GET", "POST"])
+def send_to_waiting():
+    if request.method == "POST":
+        info = request.get_json()
+        room_name = info[0]
+        creator = info[1]
+        if creator:
+            if games[room_name].start():
+                return jsonify({"processed": "true"})
+            else:
+                return jsonify({"processed": "true", "error": "Not enough players"}), 400
+        else:
+            if games[room_name].started:
+                return jsonify({"processed": "true"})
+            else:
+                return jsonify({"processed": "true", "error": "Not started yet"}), 400
+    else:
+        return render_template("waiting_area.html")
+
+@app.route("/game", methods=["GET", "POST"])
 def game_function():
     return render_template("game.html")
-#!TODO Need to make game.html file
+#!TODO Write gameplay code
 
 # Runs the app
 if __name__ == "__main__":

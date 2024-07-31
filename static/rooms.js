@@ -41,5 +41,6 @@ document.getElementById("create room").addEventListener("click", function () {
 document.getElementById("dynamic-form").addEventListener("submit", function (event) {
     event.preventDefault();
     const selectedValue = document.querySelector("input[name='roomName']:checked").value;
+    localStorage.setItem("creator", false);
     window.location.replace("/game");
 });
