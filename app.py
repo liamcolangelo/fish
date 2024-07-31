@@ -8,6 +8,7 @@ app = Flask(__name__, template_folder="templates")
 # Each key for players is the player's chosen name, the value is when they signed in.
 # This way, names can be freed after a certain time, or when their game ends.
 players = {}
+games = []
 
 # The home page for the game where they choose their name and begin the game
 @app.route("/")
@@ -29,8 +30,25 @@ def add_player():
     else:
         print("Already in use")
         print(players)
-        return jsonify({'processed': 'false', "error": "Name already in use"}), 400
+        return jsonify({'processed': 'true', "error": "Name already in use"}), 400
     
+@app.route("/rooms")
+def rooms():
+    return render_template("rooms.html")
+
+@app.route("/find_rooms", methods=["GET", "POST"])
+def find_rooms():
+    if request.method == "GET":
+        return jsonify({"processed": "true", "games": games.get_names()})
+    else:
+        info = request.get_json()
+        creator = info[0]
+        room_name = info[1]
+        for game in games:
+            if game.name == room_name:
+                return jsonify({"processed": "true", "error": "Name already exists"}), 400
+        games.append(fish.Game(room_name))
+        return jsonify({"processed": "true"})
 
 # Runs the app
 if __name__ == "__main__":
