@@ -40,7 +40,13 @@ document.getElementById("create room").addEventListener("click", function () {
 
 document.getElementById("dynamic-form").addEventListener("submit", function (event) {
     event.preventDefault();
-    const selectedValue = document.querySelector("input[name='roomName']:checked").value;
-    localStorage.setItem("creator", false);
-    window.location.replace("/game");
+    const room_name = document.querySelector("input[name='roomName']:checked").value;
+    localStorage.setItem("creator", "false");
+    var player_name = localStorage.getItem("name");
+    $.ajax({
+        type: "POST",
+        url: "/join_room",
+        data: JSON.stringify([player_name, room_name])
+    })
+    window.location.replace("/waiting");
 });

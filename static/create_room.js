@@ -11,8 +11,8 @@ document.getElementById("submit").addEventListener("click", function() {
         dataType: "json",
         success: function () {
             localStorage.setItem("room", room_name);
-            localStorage.setItem("creator", true);
-            window.location.replace("/game");
+            localStorage.setItem("creator", "true");
+            window.location.replace("/waiting");
         },
         error: function(xhr, status, error) {
             alert("Room name already in use");

@@ -3,6 +3,9 @@ from flask import Flask, render_template, request, jsonify, redirect
 from time import time
 import fish
 
+### People aren't being added when they join a room ###
+
+
 app = Flask(__name__, template_folder="templates")
 
 # Each key for players is the player's chosen name, the value is when they signed in.
@@ -41,21 +44,29 @@ def find_rooms():
     if request.method == "GET":
         game_names = []
         for game in games:
-            game_names.append(game.name)
+            game_names.append(games[game].name)
         return jsonify({"processed": "true", "games": game_names})
     else:
         info = request.get_json()
         creator = info[0]
         room_name = info[1]
         for game in games:
-            if game.name == room_name:
+            if games[game].name == room_name:
                 return jsonify({"processed": "true", "error": "Name already exists"}), 400
-        games[creator] = fish.Game(room_name, [creator])
+        games[room_name] = fish.Game(room_name, [creator])
         return jsonify({"processed": "true"})
     
 @app.route("/create_room")
 def create_room():
     return render_template("create_room.html")
+
+@app.route("/join_room", methods=["POST"])
+def join_room():
+    info = request.get_json()
+    player_name = info[0]
+    room_name = info[1]
+    games[room_name].add_player(fish.Player(player_name))
+    return jsonify({"processed": "true"})
 
 @app.route("/waiting", methods=["GET", "POST"])
 def send_to_waiting():
@@ -64,6 +75,7 @@ def send_to_waiting():
         room_name = info[0]
         creator = info[1]
         if creator:
+            print(games[room_name])
             if games[room_name].start():
                 return jsonify({"processed": "true"})
             else:

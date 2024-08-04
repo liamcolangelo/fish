@@ -83,7 +83,7 @@ class Player:
 class Game:
 	def __init__(self, name, players=[]):
 		self.name = name
-		self.player = players
+		self.players = players
 		self.started = False
 		self.creator = None
 		if len(players) > 0:
@@ -103,3 +103,6 @@ class Game:
 			return True
 		else:
 			return False
+
+	def __str__(self):
+		return f"Number of players: {len(self.players)}"
