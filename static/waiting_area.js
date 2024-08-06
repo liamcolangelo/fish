@@ -25,18 +25,19 @@ if (creator == "true") {
     document.getElementById("top-label").innerHTML = "You created this room";
     document.getElementById("start").removeAttribute("hidden");
 } else {
-    // !TODO Check if game started and the redirect
-    $.ajax({
-        type: "POST",
-        url: "/waiting",
-        data: JSON.stringify([room_name, creator]),
-        contentType: "application/json",
-        dataType: "json",
-        success: function () {
-            window.location.replace("/game");
-        },
-        error: function (xhr, status, error) {
-            // Nothing happens because game has not started yet
-        }
-    })
+    setInterval(function () {
+        $.ajax({
+            type: "POST",
+            url: "/waiting",
+            data: JSON.stringify([room_name, creator]),
+            contentType: "application/json",
+            dataType: "json",
+            success: function () {
+                window.location.replace("/game");
+            },
+            error: function (xhr, status, error) {
+                // Nothing happens because game has not started yet
+            }
+        })
+    }, 1000);
 }

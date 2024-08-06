@@ -100,6 +100,7 @@ class Game:
 			hands = gen_hands()
 			for i in range(6):
 				self.players[i].new_hand(hands[i])
+			self.started = True
 			return True
 		else:
 			return False

@@ -49,6 +49,7 @@ def find_rooms():
     else:
         info = request.get_json()
         creator = info[0]
+        creator = fish.Player(creator)
         room_name = info[1]
         for game in games:
             if games[game].name == room_name:
@@ -66,6 +67,7 @@ def join_room():
     player_name = info[0]
     room_name = info[1]
     games[room_name].add_player(fish.Player(player_name))
+    print(games[room_name])
     return jsonify({"processed": "true"})
 
 @app.route("/waiting", methods=["GET", "POST"])
@@ -74,7 +76,7 @@ def send_to_waiting():
         info = request.get_json()
         room_name = info[0]
         creator = info[1]
-        if creator:
+        if creator == "true":
             print(games[room_name])
             if games[room_name].start():
                 return jsonify({"processed": "true"})

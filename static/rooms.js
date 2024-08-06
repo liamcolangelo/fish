@@ -46,7 +46,9 @@ document.getElementById("dynamic-form").addEventListener("submit", function (eve
     $.ajax({
         type: "POST",
         url: "/join_room",
-        data: JSON.stringify([player_name, room_name])
-    })
+        data: JSON.stringify([player_name, room_name]),
+        contentType: "application/json",
+        dataType: "json"
+    });
     window.location.replace("/waiting");
 });
