@@ -105,5 +105,13 @@ class Game:
 		else:
 			return False
 
+	def get_players(self):
+		return self.players
+
+	def get_player_hand(self, player_name):
+		for player in self.players:
+			if player.name == player_name:
+				return player.hand
+
 	def __str__(self):
 		return f"Number of players: {len(self.players)}"

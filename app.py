@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, jsonify, redirect
+from flask import Flask, render_template, request, jsonify, send_file
 from time import time
 import fish
 
@@ -12,6 +12,8 @@ app = Flask(__name__, template_folder="templates")
 # This way, names can be freed after a certain time, or when their game ends.
 players = {}
 games = {}
+
+games["My room"] = fish.Game("My room") # Only for testing, remove later
 
 # The home page for the game where they choose their name and begin the game
 @app.route("/")
@@ -94,6 +96,32 @@ def send_to_waiting():
 def game_function():
     return render_template("game.html")
 #!TODO Write gameplay code
+
+@app.route("/roommates")
+def get_roommates():
+    room_name = request.args.get("room")
+    room_name = room_name.replace("%20", " ")
+    players = games[room_name].get_players()
+    return jsonify({
+        #"names": players, Uncomment later when not in testing
+        "names": ["Liam", "Henley", "Nathan", "Justin", "Carter", "Chase"], # Remove later
+        "teams": [0,0,0,1,1,1] # Make teams random or allow for choosing later
+    })
+
+@app.route("/hands")
+def get_hand():
+    room_name = request.args.get("room")
+    player_name = request.args.get("name")
+    hand = games[room_name].get_player_hand(player_name)
+    return jsonify({
+        "hand": hand
+    })
+
+@app.route("/images")
+def send_image():
+    image_name = request.args.get("image")
+    return send_file("images/" + image_name, "image/jpeg")
+
 
 # Runs the app
 if __name__ == "__main__":

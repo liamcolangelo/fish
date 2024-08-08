@@ -1,0 +1,71 @@
+/* Look up css animations later */
+
+.circle-container {
+    position: relative;
+    width: 400px;  /* Diameter of the circle */
+    height: 400px; /* Diameter of the circle */
+    border-radius: 50%;
+    margin: 0 auto;
+    border: 2px solid #ccc; /* Optional: to visualize the circle */
+    top: 50px;
+}
+
+.player {
+    position: absolute;
+    width: 80px;   /* Width of each player div */
+    height: 80px;  /* Height of each player div */
+    background-color: rgb(187, 30, 30);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-origin: center center;
+    text-align: center;
+}
+
+/* Position players in a circle */
+#player1 {
+    top: calc(100% - 40px);
+    left: calc(50% - 40px);
+    background-color: lightblue;
+}
+
+#player2 {
+    top: calc(75% - 40px);
+    left: calc(6.7% - 40px);
+}
+
+#player3 {
+    top: calc(25% - 40px);
+    left: calc(6.7% - 40px);
+    background-color: rgb(44, 78, 172);
+}
+
+#player4 {
+    top: calc(0% - 40px);
+    left: calc(50% - 40px);
+}
+
+#player5 {
+    top: calc(25% - 40px);
+    left: calc(93.3% - 40px);
+    background-color: rgb(44, 78, 172);
+}
+
+#player6 {
+    top: calc(75% - 40px);
+    left: calc(93.3% - 40px);
+}
+
+#hand {
+    position: absolute;
+    top: calc(65% - 50px);
+    left: calc(50% - 450px);
+    width: 900px;
+    height: 200px;
+}
+
+.card {
+    width: 100px;
+    height: 200px;
+}

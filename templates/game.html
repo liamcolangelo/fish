@@ -5,10 +5,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
         <script type="text/javascript" src="static/game.js" defer></script>
-        <link rel="stylesheet" href="/static/main.css"/>
+        <link rel="stylesheet" href="/static/game.css"/>
     </head>
 
     <body>
-        <h1>This is the gameplay location</h1>
+        <div class="circle-container">
+            <div class="player" id="player1">Player 1</div>
+            <div class="player" id="player2">Player 2</div>
+            <div class="player" id="player3">Player 3</div>
+            <div class="player" id="player4">Player 4</div>
+            <div class="player" id="player5">Player 5</div>
+            <div class="player" id="player6">Player 6</div>
+        </div>
+        <div id="hand"></div>
     </body>
 </html>
