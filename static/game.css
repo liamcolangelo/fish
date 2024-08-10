@@ -1,6 +1,6 @@
 /* Look up css animations later */
 
-.circle-container {
+#circle-container {
     position: relative;
     width: 400px;  /* Diameter of the circle */
     height: 400px; /* Diameter of the circle */
@@ -12,9 +12,8 @@
 
 .player {
     position: absolute;
-    width: 80px;   /* Width of each player div */
-    height: 80px;  /* Height of each player div */
-    background-color: rgb(187, 30, 30);
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -23,11 +22,23 @@
     text-align: center;
 }
 
+
+.opponent {
+    background-color: rgb(187, 30, 30);
+}
+
+.teammate {
+    background-color: rgb(44, 78, 172);
+}
+
+.self {
+    background-color: lightblue;
+}
+
 /* Position players in a circle */
 #player1 {
     top: calc(100% - 40px);
     left: calc(50% - 40px);
-    background-color: lightblue;
 }
 
 #player2 {
@@ -38,7 +49,6 @@
 #player3 {
     top: calc(25% - 40px);
     left: calc(6.7% - 40px);
-    background-color: rgb(44, 78, 172);
 }
 
 #player4 {
@@ -57,6 +67,48 @@
     left: calc(93.3% - 40px);
 }
 
+.turn-circle {
+    position: absolute;
+    width: 86px;
+    height: 86px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-origin: center center;
+    text-align: center;
+}
+
+#turn-circle1 {
+    top: calc(100% - 43px);
+    left: calc(50% - 43px);
+}
+
+#turn-circle2 {
+    top: calc(75% - 43px);
+    left: calc(6.7% - 43px);
+}
+
+#turn-circle3 {
+    top: calc(25% - 43px);
+    left: calc(6.7% - 43px);
+}
+
+#turn-circle4 {
+    top: calc(0% - 43px);
+    left: calc(50% - 43px)
+}
+
+#turn-circle5{
+    top: calc(25% - 43px);
+    left: calc(93.3% - 43px);
+}
+
+#turn-circle6 {
+    top: calc(75% - 43px);
+    left: calc(93.3% - 43px);
+}
+
 #hand {
     position: absolute;
     top: calc(65% - 50px);
@@ -68,4 +120,8 @@
 .card {
     width: 100px;
     height: 200px;
+}
+
+#half-suit-choices {
+    text-transform: capitalize;
 }

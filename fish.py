@@ -67,14 +67,6 @@ class Player:
 
 	def take_card(self, card):
 		self.hand.append(card)
-
-	def take_turn(self):
-		while True:
-			card = input("Ask for a card: ")
-			if have_card_in_half_suit(get_half_suit_from_card(card)):
-				break
-		player = input("Which player? ")
-		return [card, player]
 	
 	def new_hand(self, hand):
 		self.hand = hand
@@ -86,6 +78,7 @@ class Game:
 		self.players = players
 		self.started = False
 		self.creator = None
+		self.turn = None
 		if len(players) > 0:
 			self.creator = players[0]
 
@@ -101,17 +94,39 @@ class Game:
 			for i in range(6):
 				self.players[i].new_hand(hands[i])
 			self.started = True
+			self.turn = self.players[0].name
 			return True
 		else:
 			return False
 
 	def get_players(self):
-		return self.players
+		names = []
+		for player in self.players:
+			names.append(player.name)
+		return names
 
 	def get_player_hand(self, player_name):
 		for player in self.players:
 			if player.name == player_name:
 				return player.hand
+			
+	def get_turn(self):
+		return self.turn
+
+	def take_turn(self, asking, card, asked):
+		if asking != self.turn:
+			return
+		else:
+			for player in self.players:
+				if player.name == asking:
+					for other_player in self.players:
+						if other_player.name == asked:
+							if other_player.has_card(card):
+								player.take_card(other_player.give_card(card))
+								return
+							else:
+								self.turn = other_player.name
+								return
 
 	def __str__(self):
 		return f"Number of players: {len(self.players)}"

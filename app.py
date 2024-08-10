@@ -13,7 +13,13 @@ app = Flask(__name__, template_folder="templates")
 players = {}
 games = {}
 
-games["My room"] = fish.Game("My room") # Only for testing, remove later
+# Only for testing, remove later
+demo_names = ["Liam", "Henley", "Justin", "Chase", "Carter", "Nathan"]
+for i in range(len(demo_names)):
+    demo_names[i] = fish.Player(demo_names[i])
+
+games["My room"] = fish.Game("My room", demo_names)
+games["My room"].start()
 
 # The home page for the game where they choose their name and begin the game
 @app.route("/")
@@ -92,10 +98,9 @@ def send_to_waiting():
     else:
         return render_template("waiting_area.html")
 
-@app.route("/game", methods=["GET", "POST"])
+@app.route("/game")
 def game_function():
     return render_template("game.html")
-#!TODO Write gameplay code
 
 @app.route("/roommates")
 def get_roommates():
@@ -103,8 +108,7 @@ def get_roommates():
     room_name = room_name.replace("%20", " ")
     players = games[room_name].get_players()
     return jsonify({
-        #"names": players, Uncomment later when not in testing
-        "names": ["Liam", "Henley", "Nathan", "Justin", "Carter", "Chase"], # Remove later
+        "names": players,
         "teams": [0,0,0,1,1,1] # Make teams random or allow for choosing later
     })
 
@@ -122,6 +126,20 @@ def send_image():
     image_name = request.args.get("image")
     return send_file("images/" + image_name, "image/jpeg")
 
+@app.route("/gamestate", methods = ["GET", "POST"])
+def return_turn():
+    room = request.args.get("room")
+    if request.method == "POST":
+        info = request.get_json()
+        asking = info[0]
+        card = info[1]
+        asked = info[2]
+        # Consider putting the handler in a seperate thread to if traffic increases
+        games[room].take_turn(asking, card, asked)
+        return jsonify({"proccessed": "true"})
+    else:
+        turn = games[room].get_turn()
+        return jsonify({"turn": turn})
 
 # Runs the app
 if __name__ == "__main__":
