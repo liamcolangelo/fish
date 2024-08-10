@@ -145,26 +145,39 @@ function ask_player() {
     }
 }
 
+// Populates a dropdown menu with possible half-suits to legally ask for
+// Once a half-suit is chosen, cards that can be chosen will appear
+// Once a card is chosen, a POST request is sent to take the turn
 document.getElementById("half-suit-choices").addEventListener("change", function() {
     var element = document.querySelector("#half-suits-dropdown");
     var half_suit = element.options[element.selectedIndex].value;
     document.getElementById("half-suit-choices").setAttribute("hidden", "true");
     var previous_choices = document.getElementsByClassName("card-choice");
+    
     for (var i = 0; i < previous_choices.length; i++) {
         previous_choices[i].remove();
     }
+    
+    // TODO: Make the card choices look nice with CSS and maybe some
+    //          calculations to center them.
 
-    // TODO: Make the images of cards to choose from appear when half-suit is selected
-
-    // When a half suit is chosen, show cards to choose from
+    // Shows possible cards to ask for from chosen half suit
     document.getElementById("card-choices").removeAttribute("hidden");
-    for (var i = 0; i < 8; i++) {
-        if (! half_suits[half_suit][i] in hand) {
+    for (var i = 0; i < 6; i++) {
+        card_not_in_hand = true;
+        for (var k = 0; k < hand.length; k++) {
+            if (hand[k] == half_suits[half_suit][i]) {
+                card_not_in_hand = false;
+                break;
+            }
+        }
+        if (card_not_in_hand) {
             const card_image_element = document.createElement("img");
             card_image_element.value = half_suits[half_suit][i];
-            card_image_element.src = "/images?image=" + half_suits[half_suit][i];
+            card_image_element.src = "/images?image=" + half_suits[half_suit][i] + ".jpg";
             card_image_element.className = "card-choice";
-            card_image_element.addEventListener(function (event) {
+            document.getElementById("card-choices").appendChild(card_image_element);
+            card_image_element.addEventListener("click", function (event) {
                 card_chosen = event.target.id;
                 $.ajax({
                     type: "POST",
@@ -175,6 +188,11 @@ document.getElementById("half-suit-choices").addEventListener("change", function
                 });
                 document.getElementById("card-choices").setAttribute("hidden", "true");
             });
+        }
+        // Funny because I wanted to
+        if (document.getElementsByClassName("card-choice").length == 0) {
+            alert("You have all of the cards in the half suit, don't be stupid.");
+            document.getElementById("card-choices").setAttribute("hidden", "true");
         }
     }
 });
