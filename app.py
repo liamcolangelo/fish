@@ -117,6 +117,7 @@ def get_hand():
     room_name = request.args.get("room")
     player_name = request.args.get("name")
     hand = games[room_name].get_player_hand(player_name)
+    print(hand)
     return jsonify({
         "hand": hand
     })
@@ -136,18 +137,27 @@ def return_turn():
         asked = info[2]
         # Consider putting the handler in a seperate thread to if traffic increases
         games[room].take_turn(asking, card, asked)
-        return jsonify({"proccessed": "true"})
+        return jsonify({"processed": "true"})
     else:
         turn = games[room].get_turn()
-        return jsonify({"turn": turn, "declaring": games[room].declaring})
+        return jsonify({"turn": turn, "declaring": games[room].declaring, "declarer": games[room].declaring_player})
 
-@app.route("/begin_declaration")
+@app.route("/begin_declaration", methods=["POST"])
 def begin_declaration():
     info = request.get_json()
     room = info[0]
     player = info[1]
-    games[room].declaring = "true"
-    return jsonify({"proccessed": "true"})
+    games[room].begin_declaring(player)
+    return jsonify({"processed": "true"})
+
+@app.route("/declare", methods=["POST"])
+def declare():
+    info = request.get_json()
+    room = info[0]
+    half_suit = info[2]
+    players_selected = info[3]
+    games[room].declare(half_suit, players_selected)
+    return jsonify({"processed": "true"})
 
 # Runs the app
 if __name__ == "__main__":

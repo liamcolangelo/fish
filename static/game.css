@@ -36,6 +36,7 @@
     left: calc(50% - 40px);
     background-color: lightgreen;
     color: black;
+    font-size: 50%;
 }
 
 
@@ -129,8 +130,8 @@
 /* This has to change so that more or less than 9 cards can fit */
 #hand {
     position: absolute;
-    top: calc(65% - (height / 2));
-    left: calc(50% - (width / 2));
+    top: calc(65% - 100px);
+    left: calc(50% - 450px);
     width: 900px;
     height: 200px;
 }
@@ -142,4 +143,16 @@
 
 #half-suit-choices {
     text-transform: capitalize;
+}
+
+#declare-card {
+    height: 200px;
+    width: 150px;
+    top: calc(50% - 100px);
+    left: calc(50% - 75px);
+}
+
+#declare-card-image {
+    width: 100%;
+    height: 100%;
 }

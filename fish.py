@@ -80,6 +80,8 @@ class Game:
 		self.creator = None
 		self.turn = None
 		self.declaring = "false"
+		self.declaring_player = None
+		self.points = [0,0]
 		if len(players) > 0:
 			self.creator = players[0]
 
@@ -128,6 +130,20 @@ class Game:
 							else:
 								self.turn = other_player.name
 								return
+							
+	def begin_declaring(self, player):
+		self.declaring = True
+		self.declaring_player = player
+
+	# TODO! add points for declarations
+	def declare(self, half_suit, players_selected):
+		self.declaring = False
+		self.declaring_player = None
+		for i in range(len(players_selected)):
+			for player in self.players:
+				if not player.has_card(half_suits[half_suit][i]):
+					return False
+		return True
 
 	def __str__(self):
 		return f"Number of players: {len(self.players)}"
