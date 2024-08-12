@@ -22,6 +22,22 @@
     text-align: center;
 }
 
+#declare {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-origin: center center;
+    text-align: center;
+    top: calc(50% - 40px);
+    left: calc(50% - 40px);
+    background-color: lightgreen;
+    color: black;
+}
+
 
 .opponent {
     background-color: rgb(187, 30, 30);
@@ -77,6 +93,7 @@
     justify-content: center;
     transform-origin: center center;
     text-align: center;
+    background-color: green;
 }
 
 #turn-circle1 {
@@ -109,10 +126,11 @@
     left: calc(93.3% - 43px);
 }
 
+/* This has to change so that more or less than 9 cards can fit */
 #hand {
     position: absolute;
-    top: calc(65% - 50px);
-    left: calc(50% - 450px);
+    top: calc(65% - (height / 2));
+    left: calc(50% - (width / 2));
     width: 900px;
     height: 200px;
 }

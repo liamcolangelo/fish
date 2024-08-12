@@ -139,7 +139,15 @@ def return_turn():
         return jsonify({"proccessed": "true"})
     else:
         turn = games[room].get_turn()
-        return jsonify({"turn": turn})
+        return jsonify({"turn": turn, "declaring": games[room].declaring})
+
+@app.route("/begin_declaration")
+def begin_declaration():
+    info = request.get_json()
+    room = info[0]
+    player = info[1]
+    games[room].declaring = "true"
+    return jsonify({"proccessed": "true"})
 
 # Runs the app
 if __name__ == "__main__":

@@ -79,6 +79,7 @@ class Game:
 		self.started = False
 		self.creator = None
 		self.turn = None
+		self.declaring = "false"
 		if len(players) > 0:
 			self.creator = players[0]
 
