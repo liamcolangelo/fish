@@ -35,12 +35,8 @@ def add_player():
     name = info[0]
     if not name in players:
         players[name] = time()
-        print("Not in use")
-        print(players)
         return jsonify({'processed': 'true'})
     else:
-        print("Already in use")
-        print(players)
         return jsonify({'processed': 'true', "error": "Name already in use"}), 400
     
 @app.route("/rooms")
@@ -75,7 +71,6 @@ def join_room():
     player_name = info[0]
     room_name = info[1]
     games[room_name].add_player(fish.Player(player_name))
-    print(games[room_name])
     return jsonify({"processed": "true"})
 
 @app.route("/waiting", methods=["GET", "POST"])
@@ -85,7 +80,6 @@ def send_to_waiting():
         room_name = info[0]
         creator = info[1]
         if creator == "true":
-            print(games[room_name])
             if games[room_name].start():
                 return jsonify({"processed": "true"})
             else:
@@ -117,7 +111,6 @@ def get_hand():
     room_name = request.args.get("room")
     player_name = request.args.get("name")
     hand = games[room_name].get_player_hand(player_name)
-    print(hand)
     return jsonify({
         "hand": hand
     })
@@ -154,8 +147,8 @@ def begin_declaration():
 def declare():
     info = request.get_json()
     room = info[0]
-    half_suit = info[2]
-    players_selected = info[3]
+    half_suit = info[1]
+    players_selected = info[2]
     games[room].declare(half_suit, players_selected)
     return jsonify({"processed": "true"})
 

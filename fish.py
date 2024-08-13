@@ -132,12 +132,12 @@ class Game:
 								return
 							
 	def begin_declaring(self, player):
-		self.declaring = True
+		self.declaring = "true"
 		self.declaring_player = player
 
 	# TODO! add points for declarations
 	def declare(self, half_suit, players_selected):
-		self.declaring = False
+		self.declaring = "false"
 		self.declaring_player = None
 		for i in range(len(players_selected)):
 			for player in self.players:
