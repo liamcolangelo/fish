@@ -120,15 +120,17 @@ def send_image():
     image_name = request.args.get("image")
     return send_file("images/" + image_name, "image/jpeg")
 
+# Returns gamestate variables on a GET request and is used to take turns with POST requests
 @app.route("/gamestate", methods = ["GET", "POST"])
-def return_turn():
+def gamestate():
     room = request.args.get("room")
     if request.method == "POST":
         info = request.get_json()
-        asking = info[0]
+        asking = info[0] # The player asking for a card
         card = info[1]
-        asked = info[2]
+        asked = info[2] # The player that asking asked for the card
         # Consider putting the handler in a seperate thread to if traffic increases
+        #   Not sure if this would actually help, just an idea for later
         games[room].take_turn(asking, card, asked)
         return jsonify({"processed": "true"})
     else:

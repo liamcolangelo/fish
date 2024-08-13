@@ -61,7 +61,8 @@ class Player:
 
 	def give_card(self, card):
 		if self.has_card(card):
-			return self.hand.remove(card)
+			self.hand.remove(card)
+			return card
 		else:
 			return ""
 
@@ -139,11 +140,16 @@ class Game:
 	def declare(self, half_suit, players_selected):
 		self.declaring = "false"
 		self.declaring_player = None
+		correct = True
 		for i in range(len(players_selected)):
 			for player in self.players:
 				if not player.has_card(half_suits[half_suit][i]):
-					return False
-		return True
+					correct = False
+		for card in half_suits[half_suit]:
+			for player in self.players:
+				player.give_card(card)
+
+		return correct
 
 	def __str__(self):
 		return f"Number of players: {len(self.players)}"

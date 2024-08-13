@@ -1,13 +1,10 @@
 // TODO: Get declarations working
-//          !!! Names are not mapped to the circle properly !!!
 //          Need to disable clicking other buttons while declaring
-//          Need to remove cards from hands once they have been declared
 
 // TODO: Show score
 
 // TODO: Show how many cards each player has left
-
-// TODO: Show who is declaring with the rings around their names
+//          Gray out player when no cards left
 
 // TODO: Go back to where things are hidden/unhidden and adjust
 //          transparency of other elements to look nicer.
@@ -20,7 +17,6 @@ var my_name = localStorage.getItem("name");
 var roommate_names;
 var teams;
 var my_team;
-var declaring;
 const half_suits = {
 	"eights" : ["H8", "C8", "S8", "D8", "RJ", "BJ"],
 	"low_clubs" : ["C2", "C3", "C4", "C5", "C6", "C7"],
@@ -33,8 +29,9 @@ const half_suits = {
 	"high_diamonds" : ["D9", "D10", "DJ", "DQ", "DK", "DA"]
 };
 // Global variables which change throughout the game
-var hand;
+var hand = [];
 var asked;
+var declaring = false;
 
 
 // Populates the names of the others in the room
@@ -70,12 +67,11 @@ roommates.then(function(data) {
     }
 });
 
-update_hand(); // Shows hand at beginning of the game
-// TODO: update_hand() should be placed with the timer as 
-//          the hand changes throughout the game
 
 // Determines whose turn it is and updates the screen as needed
 setInterval(function () {
+    update_hand();
+
     var game_data = $.ajax({
         type: "GET",
         url: "/gamestate?room=" + room_name,
@@ -89,28 +85,47 @@ setInterval(function () {
         var declarer = "";
         if (declaring) {
             declarer = data["declarer"];
-        }
-
-        // Stops player from doing anything if someone is delcaring
-        if (declaring && declarer != my_name) {
-            document.getElementById("half-suit-choices").setAttribute("hidden", "true");
-            document.getElementById("card-choices").setAttribute("hidden", "true");
+            for (var i = 1; i <= roommate_names.length; i++) {
+                if (document.getElementById("player" + i).innerHTML == declarer) {
+                    document.getElementById("turn-circle" + i).style.backgroundColor = "yellow";
+                } else {
+                    document.getElementById("turn-circle" + i).style.backgroundColor = "transparent";
+                }
+            }
         }
 
         var opponent_bubbles = document.getElementsByClassName("opponent");
 
-        for (var i = 0; i < roommate_names.length; i++) {
-            if (roommate_names[i] == turn) {
-                document.getElementById("turn-circle" + (i + 1)).style.backgroundColor = "green";
-            } else {
-                document.getElementById("turn-circle" + (i + 1)).style.backgroundColor = "transparent";
+        // Stops player from doing anything if someone is delcarng
+        if (declaring && declarer != my_name) {
+            for (var i = 1; i <= 6; i++) {
+                document.getElementById("player" + i).setAttribute("disabled", "true");
             }
-        }
-
-        if (on_my_team(turn)) {
-            document.getElementById("declare").removeAttribute("hidden");
-        } else {
             document.getElementById("declare").setAttribute("hidden", "true");
+            document.getElementById("half-suit-choices").setAttribute("hidden", "true");
+            document.getElementById("card-choices").setAttribute("hidden", "true");
+        } else if (declaring) {
+            document.getElementById()
+            for (var i = 2; i<= 6; i += 2) {
+                document.getElementById("player" + i).setAttribute("disabled", "disabled");
+            }
+        } else {
+            for (var i = 1; i <= 6; i++) {
+                document.getElementById("player" + i).removeAttribute("disabled");
+            }
+
+            for (var i = 1; i <= roommate_names.length; i++) {
+                if (document.getElementById("player" + i).innerHTML == turn) {
+                    document.getElementById("turn-circle" + (i)).style.backgroundColor = "green";
+                } else {
+                    document.getElementById("turn-circle" + (i)).style.backgroundColor = "transparent";
+                }
+            }
+            if (on_my_team(turn)) {
+                document.getElementById("declare").removeAttribute("hidden");
+            } else {
+                document.getElementById("declare").setAttribute("hidden", "true");
+            }
         }
 
         if (turn == my_name) {
@@ -123,10 +138,11 @@ setInterval(function () {
             }
         }
     });
-}, 5000); // Change timer later to be shorter
+}, 2500); // Change timer later to be shorter
 
 // Allows the player to begin declaring
 document.getElementById("declare").addEventListener("click", function() {
+    declaring = true;
     $.ajax({
         type: "POST",
         url: "/begin_declaration",
@@ -136,9 +152,11 @@ document.getElementById("declare").addEventListener("click", function() {
     });
 
     var previous_half_suit_options = document.getElementsByClassName("half-suit-option");
-    for (var i = 0; i < previous_half_suit_options.length; i++) {
-        previous_half_suit_options[i].remove();
+    for (var i = previous_half_suit_options.length - 1; i >= 0; i--) {
+        document.getElementById("half-suits-dropdown").removeChild(previous_half_suit_options[i]);
     }
+    
+    document.getElementById("half-suits-dropdown").value = "none";
 
     for (var half_suit in half_suits) {
         const half_suit_option = document.createElement("option");
@@ -151,17 +169,17 @@ document.getElementById("declare").addEventListener("click", function() {
 });
 
 document.getElementById("player2").addEventListener("click", function () {
-    asked = roommate_names[1];
+    asked = document.getElementById("player2").innerHTML;
     ask_player();
 });
 
 document.getElementById("player4").addEventListener("click", function () {
-    asked = roommate_names[3];
+    asked = document.getElementById("player4").innerHTML;
     ask_player();
 });
 
 document.getElementById("player6").addEventListener("click", function () {
-    asked = roommate_names[5];
+    asked = document.getElementById("player6").innerHTML;
     ask_player();
 });
 
@@ -273,33 +291,31 @@ function update_hand() {
         contentType: "application/json",
         dataType: "json"
     });
-
-    var current_cards = document.getElementsByClassName("card");
-    for (var i = 0; i < current_cards.length; i++) {
-        current_cards[i].remove();
-    }
-
     hand_data.then(function (data) {
+        var previous_hand = hand;
         hand = organize_by_half_suit(data["hand"]);
-        for (var i = 0; i < hand.length; i++) {
-            const card = document.createElement("img");
-            card.className = "card";
-            card.src = "/images?image=" + hand[i] + ".jpg";
-            document.getElementById("hand").appendChild(card);
+        var current_cards = document.getElementsByClassName("card");
+        if (previous_hand.length != hand.length) {
+            for (var i = current_cards.length - 1; i >= 0; i--) {
+                current_cards[i].remove();
+            }
+            for (var i = 0; i < hand.length; i++) {
+                const card = document.createElement("img");
+                card.className = "card";
+                card.src = "/images?image=" + hand[i] + ".jpg";
+                document.getElementById("hand").appendChild(card);
+            }
         }
     });
 }
 
 // After player chooses an opponent to ask, they choose which card to ask for
 function ask_player() {
-    // Supposed to remove all options from the dropdown so their are no repeats
-    // Not sure why the do-while is neccessary, but it was not working without it.
-    do {
-        previous_half_suit_options = document.getElementsByClassName("half-suit-option");
-        for (var i = 0; i < previous_half_suit_options.length; i++) {
-            document.getElementById("half-suits-dropdown").removeChild(previous_half_suit_options[i]);
-        }
-    } while (document.getElementsByClassName("half-suit-option").length > 0)
+    // Removes all options from the dropdown so their are no repeats
+    previous_half_suit_options = document.getElementsByClassName("half-suit-option");
+    for (var i = previous_half_suit_options.length - 1; i >= 0; i--) {
+        document.getElementById("half-suits-dropdown").removeChild(previous_half_suit_options[i]);
+    }
     
     document.getElementById("half-suits-dropdown").value = "none";
     document.getElementById("half-suit-choices").removeAttribute("hidden");
@@ -339,19 +355,22 @@ function go_thorugh_cards(half_suit, players_chosen, iteration) {
         var player_element = document.getElementById("player1");
         player_element.parentNode.replaceChild(player_element.cloneNode(true), player_element); // Removes previous event listeners
         document.getElementById("player1").addEventListener("click", function () {
-            players_chosen.push(roommate_names[1]);
+            console.log(document.getElementById("player1").innerHTML);
+            players_chosen.push(document.getElementById("player1").innerHTML);
             go_thorugh_cards(half_suit, players_chosen, iteration + 1);
         });
         var player_element = document.getElementById("player3");
         player_element.parentNode.replaceChild(player_element.cloneNode(true), player_element); // Removes previous event listeners
         document.getElementById("player3").addEventListener("click", function () {
-            players_chosen.push(roommate_names[3]);
+            console.log(document.getElementById("player3").innerHTML);
+            players_chosen.push(document.getElementById("player3").innerHTML);
             go_thorugh_cards(half_suit, players_chosen, iteration + 1);
         });
         var player_element = document.getElementById("player5");
         player_element.parentNode.replaceChild(player_element.cloneNode(true), player_element); // Removes previous event listeners
         document.getElementById("player5").addEventListener("click", function () {
-            players_chosen.push(roommate_names[5]);
+            console.log(document.getElementById("player5").innerHTML);
+            players_chosen.push(document.getElementById("player5").innerHTML);
             go_thorugh_cards(half_suit, players_chosen, iteration + 1);
         });
     }
