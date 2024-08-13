@@ -1,13 +1,16 @@
-// TODO: Get declarations working
-//          Need to disable clicking other buttons while declaring
+// TODO: Show when a player asks for a card
 
 // TODO: Show score
 
 // TODO: Show how many cards each player has left
 //          Gray out player when no cards left
 
-// TODO: Go back to where things are hidden/unhidden and adjust
-//          transparency of other elements to look nicer.
+// TODO: remove half-suit choice from dropdown when declaring if already declared
+
+// TODO: Make things look nicer
+
+// TODO: Switch order of room and name screens so that people
+//          in different rooms can have the same name
 
 
 
@@ -92,6 +95,11 @@ setInterval(function () {
                     document.getElementById("turn-circle" + i).style.backgroundColor = "transparent";
                 }
             }
+            if (my_name != declarer) {
+                document.getElementById("declare").setAttribute("hidden", "true");
+            }
+        } else {
+            document.getElementById("declare").removeAttribute("hidden");
         }
 
         var opponent_bubbles = document.getElementsByClassName("opponent");
@@ -99,21 +107,11 @@ setInterval(function () {
         // Stops player from doing anything if someone is delcarng
         if (declaring && declarer != my_name) {
             for (var i = 1; i <= 6; i++) {
-                document.getElementById("player" + i).setAttribute("disabled", "true");
+                document.getElementById("player" + i).pointerEvents = "none";
             }
-            document.getElementById("declare").setAttribute("hidden", "true");
             document.getElementById("half-suit-choices").setAttribute("hidden", "true");
             document.getElementById("card-choices").setAttribute("hidden", "true");
-        } else if (declaring) {
-            document.getElementById()
-            for (var i = 2; i<= 6; i += 2) {
-                document.getElementById("player" + i).setAttribute("disabled", "disabled");
-            }
         } else {
-            for (var i = 1; i <= 6; i++) {
-                document.getElementById("player" + i).removeAttribute("disabled");
-            }
-
             for (var i = 1; i <= roommate_names.length; i++) {
                 if (document.getElementById("player" + i).innerHTML == turn) {
                     document.getElementById("turn-circle" + (i)).style.backgroundColor = "green";
@@ -169,18 +167,24 @@ document.getElementById("declare").addEventListener("click", function() {
 });
 
 document.getElementById("player2").addEventListener("click", function () {
-    asked = document.getElementById("player2").innerHTML;
-    ask_player();
+    if (! declaring) {
+        asked = document.getElementById("player2").innerHTML;
+        ask_player();
+    }
 });
 
 document.getElementById("player4").addEventListener("click", function () {
-    asked = document.getElementById("player4").innerHTML;
-    ask_player();
+    if (! declaring) {
+        asked = document.getElementById("player4").innerHTML;
+        ask_player();
+    }
 });
 
 document.getElementById("player6").addEventListener("click", function () {
-    asked = document.getElementById("player6").innerHTML;
-    ask_player();
+    if (! declaring) {
+        asked = document.getElementById("player6").innerHTML;
+        ask_player();
+    }
 });
 
 
@@ -203,9 +207,6 @@ document.getElementById("half-suits-dropdown").addEventListener("change", functi
         for (var i = 0; i < previous_choices.length; i++) {
             previous_choices[i].remove();
         }
-        
-        // TODO: Make the card choices look nice with CSS and maybe some
-        //          calculations to center them.
 
         // Shows possible cards to ask for from chosen half suit
         document.getElementById("card-choices").removeAttribute("hidden");
