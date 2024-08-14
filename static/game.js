@@ -1,13 +1,9 @@
-// TODO: Show when a player asks for a card
-
-// TODO: Show score
-
 // TODO: Show how many cards each player has left
 //          Gray out player when no cards left
 
 // TODO: remove half-suit choice from dropdown when declaring if already declared
 
-// TODO: Make things look nicer
+// TODO: Make things look nice on all screens
 
 // TODO: Switch order of room and name screens so that people
 //          in different rooms can have the same name
@@ -84,6 +80,15 @@ setInterval(function () {
 
     game_data.then(function (data) {
         turn = data["turn"]
+        last_move = data["last_move"]
+        document.getElementById("last-move").innerHTML = last_move
+        var scores = data["score"]
+        document.getElementById("team-score").innerHTML = "Team: " + scores[my_team];
+        if (my_team == 1) {
+            document.getElementById("opponent-score").innerHTML = "Opponents: " + scores[0];
+        } else {
+            document.getElementById("opponent-score").innerHTML = "Opponents: " + scores[1];
+        }
         declaring = data["declaring"] == "true";
         var declarer = "";
         if (declaring) {
@@ -225,11 +230,11 @@ document.getElementById("half-suits-dropdown").addEventListener("change", functi
                 card_image_element.className = "card-choice";
                 document.getElementById("card-choices").appendChild(card_image_element);
                 card_image_element.addEventListener("click", function (event) {
-                    card_chosen = event.target.id;
+                    card_chosen = event.target.value;
                     $.ajax({
                         type: "POST",
                         url: "/gamestate?room=" + room_name,
-                        data: JSON.stringify([my_name, card_chosen, asked]),
+                        data: JSON.stringify([my_name, card_chosen, asked, my_team]),
                         contentType: "application/json",
                         dataType: "json"
                     });
@@ -343,7 +348,7 @@ function go_thorugh_cards(half_suit, players_chosen, iteration) {
         $.ajax({
             type: "POST",
             url: "/declare",
-            data: JSON.stringify([room_name, half_suit, players_chosen]),
+            data: JSON.stringify([room_name, half_suit, players_chosen, my_team]),
             contentType: "application/json",
             dataType: "json"
         });

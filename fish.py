@@ -47,6 +47,34 @@ def have_card_in_half_suit(suit, hand):
 			return True
 	return False
 
+def get_full_card_name(card):
+	half_suit = get_half_suit_from_card(card)
+	suit = half_suit.replace("high_", "").replace("low_", "")
+	full_name = ""
+	if suit == "eights" and (card[0] != "R" or card[0] != "B"):
+		if card[0] == "H":
+			suit = "hearts"
+		elif card[0] == "C":
+			suit = "clubs"
+		elif card[0] == "S":
+			suit = "spades"
+		else:
+			suit = "diamonds"
+	if card != "RJ" and card != "BJ":
+		if card[1] == "J":
+			full_name = "Jack of " + suit.capitalize()
+		elif card[1] == "Q":
+			full_name = "Queen of " + suit.capitalize()
+		elif card[1] == "K":
+			full_name = "King of " + suit.capitalize()
+		else:
+			full_name = card[1] + " of " + suit.capitalize()
+	elif card == "RJ":
+		full_name = "Colored Joker"
+	else:
+		full_name = "Black Joker"
+	return full_name
+
 
 class Player:
 	def __init__(self, name, hand=[]):
@@ -82,6 +110,7 @@ class Game:
 		self.turn = None
 		self.declaring = "false"
 		self.declaring_player = None
+		self.last_move = "First Move"
 		self.points = [0,0]
 		if len(players) > 0:
 			self.creator = players[0]
@@ -127,9 +156,11 @@ class Game:
 						if other_player.name == asked:
 							if other_player.has_card(card):
 								player.take_card(other_player.give_card(card))
+								self.last_move = asking + " got " + get_full_card_name(card) + " from " + asked
 								return
 							else:
 								self.turn = other_player.name
+								self.last_move = asking + " asked " + asked + " for " + get_full_card_name(card)
 								return
 							
 	def begin_declaring(self, player):
@@ -137,18 +168,27 @@ class Game:
 		self.declaring_player = player
 
 	# TODO! add points for declarations
-	def declare(self, half_suit, players_selected):
+	def declare(self, half_suit, players_selected, team):
 		self.declaring = "false"
 		self.declaring_player = None
 		correct = True
 		for i in range(len(players_selected)):
 			for player in self.players:
 				if not player.has_card(half_suits[half_suit][i]):
+					self.last_move = "Incorrectly declared " + half_suit.replace("_", " ").capitalize()
 					correct = False
 		for card in half_suits[half_suit]:
 			for player in self.players:
 				player.give_card(card)
 
+		if correct:
+			self.last_move = "Correctly declared " + half_suit.replace("_" + " ").capitalize()
+			self.points[team] += 1
+		else:
+			if team == 1:
+				self.points[0] += 1
+			else:
+				self.points[1] += 1
 		return correct
 
 	def __str__(self):

@@ -103,7 +103,7 @@ def get_roommates():
     players = games[room_name].get_players()
     return jsonify({
         "names": players,
-        "teams": [0,0,0,1,1,1] # Make teams random or allow for choosing later
+        "teams": [0,0,0,1,1,1] # TODO! Make teams random or allow for choosing later
     })
 
 @app.route("/hands")
@@ -135,7 +135,7 @@ def gamestate():
         return jsonify({"processed": "true"})
     else:
         turn = games[room].get_turn()
-        return jsonify({"turn": turn, "declaring": games[room].declaring, "declarer": games[room].declaring_player})
+        return jsonify({"turn": turn, "declaring": games[room].declaring, "declarer": games[room].declaring_player, "last_move": games[room].last_move, "score": games[room].points})
 
 @app.route("/begin_declaration", methods=["POST"])
 def begin_declaration():
@@ -151,7 +151,8 @@ def declare():
     room = info[0]
     half_suit = info[1]
     players_selected = info[2]
-    games[room].declare(half_suit, players_selected)
+    team = info[3]
+    games[room].declare(half_suit, players_selected, team)
     return jsonify({"processed": "true"})
 
 # Runs the app
