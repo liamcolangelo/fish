@@ -10,7 +10,6 @@ app = Flask(__name__, template_folder="templates")
 
 # Each key for players is the player's chosen name, the value is when they signed in.
 # This way, names can be freed after a certain time, or when their game ends.
-players = {}
 games = {}
 
 # Only for testing, remove later
@@ -30,18 +29,16 @@ def home():
 # Validates whether the name is valid (not already taken)
 @app.route("/add_player", methods=["POST"])
 def add_player():
-    # Javascript client should send an id
     info = request.get_json()
     name = info[0]
-    if not name in players:
-        players[name] = time()
+    room_name = info[1]
+    print(room_name)
+    print(games)
+    if not name in games[room_name].get_player_names():
+        games[room_name].add_player(fish.Player(name))
         return jsonify({'processed': 'true'})
     else:
         return jsonify({'processed': 'true', "error": "Name already in use"}), 400
-    
-@app.route("/rooms")
-def rooms():
-    return render_template("rooms.html")
 
 @app.route("/find_rooms", methods=["GET", "POST"])
 def find_rooms():
@@ -52,13 +49,10 @@ def find_rooms():
         return jsonify({"processed": "true", "games": game_names})
     else:
         info = request.get_json()
-        creator = info[0]
-        creator = fish.Player(creator)
-        room_name = info[1]
-        for game in games:
-            if games[game].name == room_name:
-                return jsonify({"processed": "true", "error": "Name already exists"}), 400
-        games[room_name] = fish.Game(room_name, [creator])
+        room_name = info[0]
+        if room_name in games:
+            return jsonify({"processed": "true", "error": "Name already exists"}), 400
+        games[room_name] = fish.Game(room_name) # Look here
         return jsonify({"processed": "true"})
     
 @app.route("/create_room")
@@ -72,6 +66,10 @@ def join_room():
     room_name = info[1]
     games[room_name].add_player(fish.Player(player_name))
     return jsonify({"processed": "true"})
+
+@app.route("/choose_name")
+def choose_name():
+    return render_template("name.html")
 
 @app.route("/waiting", methods=["GET", "POST"])
 def send_to_waiting():

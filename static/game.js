@@ -1,12 +1,8 @@
 // TODO: Make things look nice on all screens
 
-// TODO: Switch order of room and name screens so that people
-//          in different rooms can have the same name
-
 // TODO: Add winning screen
 
 // TODO: delete game data when finished or timedout
-
 
 
 // Constants throughout game

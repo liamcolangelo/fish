@@ -144,6 +144,12 @@ class Game:
 			if player.name == player_name:
 				return player.hand
 			
+	def get_player_names(self):
+		names = []
+		for player in self.players:
+			names.append(player.name)
+		return names
+
 	def get_turn(self):
 		return self.turn
 

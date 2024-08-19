@@ -11,7 +11,16 @@
     <body>
         <h1>Welcome to fish!</h1>
         <h5>I didn't feel like typing out the rules, so you can find them <a href="https://en.wikipedia.org/wiki/Literature_(card_game)" target="_blank" rel="noopener noreferrer">here</a>.</h5>
-        <input id="name" value="Enter a name">
-        <button id="play">Click here to play!</button>
+        <button id="create room">Create room</button>
+        <form id="dynamic-form" action="#">
+            <fieldset>
+                <legend>Choose a room:</legend>
+                <div id="options-container">
+                    <!--Options will be added here by javascript-->
+                </div>
+                <div>
+                    <button type="submit">Enter Room</button>
+                </div>
+            </fieldset>
     </body>
 </html>
