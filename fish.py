@@ -112,6 +112,7 @@ class Game:
 		self.declaring_player = None
 		self.last_move = "First Move"
 		self.points = [0,0]
+		self.remaining_half_suits = ["eights", "low_clubs", "low_hearts", "low_spades", "low_diamonds", "high_hearts", "high_clubs", "high_spades", "high_clubs"]
 		if len(players) > 0:
 			self.creator = players[0]
 
@@ -167,7 +168,6 @@ class Game:
 		self.declaring = "true"
 		self.declaring_player = player
 
-	# TODO! add points for declarations
 	def declare(self, half_suit, players_selected, team):
 		self.declaring = "false"
 		self.declaring_player = None
@@ -189,7 +189,17 @@ class Game:
 				self.points[0] += 1
 			else:
 				self.points[1] += 1
+		self.remaining_half_suits.remove(half_suit)
 		return correct
+
+	def get_remaining_half_suits(self):
+		return self.remaining_half_suits
+
+	def get_players_cards_num(self):
+		nums = {}
+		for player in self.players:
+			nums[player.name] = len(player.hand)
+		return nums
 
 	def __str__(self):
 		return f"Number of players: {len(self.players)}"

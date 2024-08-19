@@ -135,7 +135,14 @@ def gamestate():
         return jsonify({"processed": "true"})
     else:
         turn = games[room].get_turn()
-        return jsonify({"turn": turn, "declaring": games[room].declaring, "declarer": games[room].declaring_player, "last_move": games[room].last_move, "score": games[room].points})
+        return jsonify({
+            "turn": turn,
+            "declaring": games[room].declaring,
+            "declarer": games[room].declaring_player,
+            "last_move": games[room].last_move,
+            "score": games[room].points,
+            "card_nums": games[room].get_players_cards_num()
+            })
 
 @app.route("/begin_declaration", methods=["POST"])
 def begin_declaration():
@@ -144,6 +151,12 @@ def begin_declaration():
     player = info[1]
     games[room].begin_declaring(player)
     return jsonify({"processed": "true"})
+
+@app.route("/remaining_half_suits", methods=["GET"])
+def get_remaining_half_suits():
+    room = request.args.get("room")
+    half_suits = games[room].get_remaining_half_suits()
+    return jsonify({"half_suits": half_suits})
 
 @app.route("/declare", methods=["POST"])
 def declare():

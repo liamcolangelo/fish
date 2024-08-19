@@ -1,12 +1,11 @@
-// TODO: Show how many cards each player has left
-//          Gray out player when no cards left
-
-// TODO: remove half-suit choice from dropdown when declaring if already declared
-
 // TODO: Make things look nice on all screens
 
 // TODO: Switch order of room and name screens so that people
 //          in different rooms can have the same name
+
+// TODO: Add winning screen
+
+// TODO: delete game data when finished or timedout
 
 
 
@@ -83,6 +82,18 @@ setInterval(function () {
         last_move = data["last_move"]
         document.getElementById("last-move").innerHTML = last_move
         var scores = data["score"]
+        var num_cards = data["card_nums"];
+        console.log(num_cards);
+        for (var player in num_cards) {
+            for (var i = 1; i <= 6; i++) {
+                if (document.getElementById("player" + i).innerHTML == player) {
+                    document.getElementById("score" + i).innerHTML = num_cards[player];
+                    if (num_cards[player] == 0) {
+                        document.getElementById("player" + i).style.backgroundColor = "lightgray";
+                    }
+                }
+            }
+        }
         document.getElementById("team-score").innerHTML = "Team: " + scores[my_team];
         if (my_team == 1) {
             document.getElementById("opponent-score").innerHTML = "Opponents: " + scores[0];
@@ -161,14 +172,25 @@ document.getElementById("declare").addEventListener("click", function() {
     
     document.getElementById("half-suits-dropdown").value = "none";
 
-    for (var half_suit in half_suits) {
-        const half_suit_option = document.createElement("option");
-        half_suit_option.value = half_suit;
-        half_suit_option.innerHTML = half_suit.replace("_", " ");
-        half_suit_option.className = "half-suit-option";
-        document.getElementById("half-suits-dropdown").appendChild(half_suit_option);
-    }
-    document.getElementById("half-suit-choices").removeAttribute("hidden");
+    var remaining_half_suits_data = $.ajax({
+        type: "GET",
+        url: "/remaining_half_suits?room=" + room_name,
+        contentType: "application/json",
+        dataType: "json"
+    });
+
+    remaining_half_suits_data.then(function(data) {
+        var remaining_half_suits = data["half_suits"];
+        for (var i = 0; i < remaining_half_suits.length; i++) {
+            var half_suit = remaining_half_suits[i];
+            const half_suit_option = document.createElement("option");
+            half_suit_option.value = half_suit;
+            half_suit_option.innerHTML = half_suit.replace("_", " ");
+            half_suit_option.className = "half-suit-option";
+            document.getElementById("half-suits-dropdown").appendChild(half_suit_option);
+            document.getElementById("half-suit-choices").removeAttribute("hidden");
+        }
+    });
 });
 
 document.getElementById("player2").addEventListener("click", function () {
