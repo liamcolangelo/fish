@@ -1,4 +1,53 @@
-h1 {
-    color: salmon;
+html {
+    background-color: #bdded5;
 }
 
+h1 {
+    color: #bb1b1b;
+    font-size: 500%;
+    margin: 1%;
+}
+
+h3 {
+    font-size: 250%;
+    margin: 1%;
+}
+
+#choose-label {
+    margin-top: 2.5%;
+}
+
+h5 {
+    color: #2a2ca5;
+    margin: 1%;
+    font-size: 100%;
+}
+
+#options-container {
+    font-size: 250%;
+    max-height: 20%;
+    overflow: scroll;
+}
+
+fieldset {
+    width: 35%;
+}
+
+button {
+    color: #2a2ca5;
+    background-color: #94aea6;
+    font-size: 200%;
+}
+
+#enter-room {
+    margin-top: 4%;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+input[name='roomName']:checked + label{
+    background-color: #516660;
+    color: #bdded5;
+}

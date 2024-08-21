@@ -9,18 +9,23 @@
     </head>
 
     <body>
-        <h1>Welcome to fish!</h1>
-        <h5>I didn't feel like typing out the rules, so you can find them <a href="https://en.wikipedia.org/wiki/Literature_(card_game)" target="_blank" rel="noopener noreferrer">here</a>.</h5>
-        <button id="create room">Create room</button>
-        <form id="dynamic-form" action="#">
-            <fieldset>
-                <legend>Choose a room:</legend>
-                <div id="options-container">
-                    <!--Options will be added here by javascript-->
-                </div>
-                <div>
-                    <button type="submit">Enter Room</button>
-                </div>
-            </fieldset>
+        <center>
+            <h1>Welcome to Fish</h1>
+            <h5>I didn't feel like typing out the rules, so you can find them <a href="https://en.wikipedia.org/wiki/Literature_(card_game)" target="_blank" rel="noopener noreferrer">here</a>.</h5>
+            <h5>You can find the code for this site at <a href="https://github.com/liamcolangelo/fish" target="_blank" rel="noopener noreferrer">GitHub</a>.</h5>
+            <h3 id="choose-label">Choose a room</h3>
+            <form id="dynamic-form" action="#">
+                <fieldset>
+                    <div id="options-container">
+                        <!--Options will be added here by javascript-->
+                    </div>
+                    <div>
+                        <button id="enter-room" type="submit">Enter Room</button>
+                    </div>
+                </fieldset>
+            </form>
+            <h3>Or</h3>
+            <button id="create room">Create room</button>
+        </center>
     </body>
 </html>

@@ -2,8 +2,11 @@
 
 // TODO: Add winning screen
 
+// TODO: Ensure that this is scalable
+
 // TODO: delete game data when finished or timedout
 
+// TODO: publish site
 
 // Constants throughout game
 var room_name = localStorage.getItem("room");
@@ -61,7 +64,7 @@ roommates.then(function(data) {
     }
 });
 
-
+/*
 // Determines whose turn it is and updates the screen as needed
 setInterval(function () {
     update_hand();
@@ -149,7 +152,7 @@ setInterval(function () {
         }
     });
 }, 2500); // Change timer later to be shorter
-
+*/
 // Allows the player to begin declaring
 document.getElementById("declare").addEventListener("click", function() {
     declaring = true;

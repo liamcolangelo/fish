@@ -21,6 +21,7 @@ rooms.then(function(data) {
         const input = document.createElement('input');
         input.type = 'radio';
         input.id = room_names[i];
+        input.className = "room-choice";
         input.name = 'roomName';
         input.value = room_names[i];
 
