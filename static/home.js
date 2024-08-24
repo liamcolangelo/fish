@@ -21,17 +21,18 @@ rooms.then(function(data) {
         const input = document.createElement('input');
         input.type = 'radio';
         input.id = room_names[i];
-        input.className = "room-choice";
         input.name = 'roomName';
         input.value = room_names[i];
 
         const label = document.createElement('label');
+        label.className = "room-choice";
         label.htmlFor = room_names[i];
         label.textContent = room_names[i];
 
         div.appendChild(input);
         div.appendChild(label);
         container.appendChild(div);
+        container.appendChild(document.createElement("br"));
     }
 });
 

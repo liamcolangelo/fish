@@ -1,9 +1,6 @@
 import os
 from flask import Flask, render_template, request, jsonify, send_file
-from time import time
 import fish
-
-### People aren't being added when they join a room ###
 
 
 app = Flask(__name__, template_folder="templates")
