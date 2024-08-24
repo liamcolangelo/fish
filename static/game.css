@@ -1,19 +1,65 @@
 /* Look up css animations later */
 
+html {
+    background-color: #bdded5;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+}
+
+#last-move {
+    position: absolute;
+    margin: 0;
+    height: 10vh;
+    width: 25vw;
+    top: 35vh;
+    left: 7vw;
+    text-align: center;
+}
+
+#scores-div {
+    position: absolute;
+    margin: 0;
+    top: 25vh;
+    height: 50vh;
+    width: 20vw;
+    left: calc(90% - 12.5vw);
+}
+
+#half-suit-choices {
+    position: absolute;
+    height: 10vh;
+    width: 100vw;
+    top: 25vh;
+    text-align: center;
+}
+
+#half-suits-dropdown {
+    margin: auto;
+    height: 100%;
+    width: 25%;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 200%;
+}
+
 #circle-container {
-    position: relative;
-    width: 400px;  /* Diameter of the circle */
-    height: 400px; /* Diameter of the circle */
+    position: absolute;
+    width: 50vh;  /* Diameter of the circle */
+    height: 50vh; /* Diameter of the circle */
     border-radius: 50%;
     margin: 0 auto;
-    border: 2px solid #ccc; /* Optional: to visualize the circle */
-    top: 50px;
+    top: 10vh;
+    left: calc(50% - 25vh);
 }
 
 .player {
     position: absolute;
-    width: 80px;
-    height: 80px;
+    width: 15vh;
+    height: 15vh;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -22,18 +68,29 @@
     text-align: center;
 }
 
+.player-name {
+    position: absolute;
+    top: 1.5vh;
+    height: 2vh;
+}
+
+.hand-size {
+    position: absolute;
+    top: 5.5vh;
+}
+
 #declare {
     position: absolute;
-    width: 80px;
-    height: 80px;
+    width: 15vh;
+    height: 15vh;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     transform-origin: center center;
     text-align: center;
-    top: calc(50% - 40px);
-    left: calc(50% - 40px);
+    top: calc(50% - 7.5vh);
+    left: calc(50% - 7.5vh);
     background-color: lightgreen;
     color: black;
     font-size: 50%;
@@ -49,45 +106,45 @@
 }
 
 .self {
-    background-color: lightblue;
+    background-color: rgb(53, 195, 243);
 }
 
 /* Position players in a circle */
-#player1 {
-    top: calc(100% - 40px);
-    left: calc(50% - 40px);
+#player-div1 {
+    top: calc(100% - 7.5vh);
+    left: calc(50% - 7.5vh);
 }
 
-#player2 {
-    top: calc(75% - 40px);
-    left: calc(6.7% - 40px);
+#player-div2 {
+    top: calc(75% - 7.5vh);
+    left: calc(6.7% - 7.5vh);
 }
 
-#player3 {
-    top: calc(25% - 40px);
-    left: calc(6.7% - 40px);
+#player-div3 {
+    top: calc(25% - 7.5vh);
+    left: calc(6.7% - 7.5vh);
 }
 
-#player4 {
-    top: calc(0% - 40px);
-    left: calc(50% - 40px);
+#player-div4 {
+    top: calc(0% - 7.5vh);
+    left: calc(50% - 7.5vh);
 }
 
-#player5 {
-    top: calc(25% - 40px);
-    left: calc(93.3% - 40px);
+#player-div5 {
+    top: calc(25% - 7.5vh);
+    left: calc(93.3% - 7.5vh);
     background-color: rgb(44, 78, 172);
 }
 
-#player6 {
-    top: calc(75% - 40px);
-    left: calc(93.3% - 40px);
+#player-div6 {
+    top: calc(75% - 7.5vh);
+    left: calc(93.3% - 7.5vh);
 }
 
 .turn-circle {
     position: absolute;
-    width: 86px;
-    height: 86px;
+    width: 17vh;
+    height: 17vh;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -98,47 +155,54 @@
 }
 
 #turn-circle1 {
-    top: calc(100% - 43px);
-    left: calc(50% - 43px);
+    top: calc(100% - 8.5vh);
+    left: calc(50% - 8.5vh);
 }
 
 #turn-circle2 {
-    top: calc(75% - 43px);
-    left: calc(6.7% - 43px);
+    top: calc(75% - 8.5vh);
+    left: calc(6.7% - 8.5vh);
 }
 
 #turn-circle3 {
-    top: calc(25% - 43px);
-    left: calc(6.7% - 43px);
+    top: calc(25% - 8.5vh);
+    left: calc(6.7% - 8.5vh);
 }
 
 #turn-circle4 {
-    top: calc(0% - 43px);
-    left: calc(50% - 43px)
+    top: calc(0% - 8.5vh);
+    left: calc(50% - 8.5vh)
 }
 
 #turn-circle5{
-    top: calc(25% - 43px);
-    left: calc(93.3% - 43px);
+    top: calc(25% - 8.5vh);
+    left: calc(93.3% - 8.5vh);
 }
 
 #turn-circle6 {
-    top: calc(75% - 43px);
-    left: calc(93.3% - 43px);
+    top: calc(75% - 8.5vh);
+    left: calc(93.3% - 8.5vh);
 }
 
-/* This has to change so that more or less than 9 cards can fit */
+
 #hand {
     position: absolute;
-    top: calc(65% - 100px);
-    left: calc(50% - 450px);
-    width: 900px;
-    height: 200px;
+    width: 75vw;
+    height: 21vh;
+    top: 75vh;
+    left: calc(50% - 37.5vw);
+    justify-content: center;
+    text-align: center;
+    overflow: scroll;
 }
 
 .card {
-    width: 100px;
-    height: 200px;
+    position: relative;
+    width: 10vh;
+    height: 20vh;
+    margin: auto;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 #half-suit-choices {
@@ -146,10 +210,11 @@
 }
 
 #declare-card {
-    height: 200px;
-    width: 150px;
-    top: calc(50% - 100px);
-    left: calc(50% - 75px);
+    position: absolute;
+    height: 25vh;
+    width: 20vh;
+    top: 22.5vh;
+    left: calc(50% - 10vh);
 }
 
 #declare-card-image {
@@ -157,10 +222,27 @@
     height: 100%;
 }
 
+#card-choices {
+    position: absolute;
+    height: 40vh;
+    width: 61vw;
+    top: calc(40% - 20vh);
+    left: calc(50% - 30.5vw);
+    text-align: center;
+}
+
+.card-choice {
+    height: 100%;
+    width: 10vw;
+    margin: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
 .scores {
     color: black;
-    height: 20px;
-    width: 15px;
+    height: 10vh;
+    width: 10vh;
     position: absolute;
     border-radius: 50%;
     display: flex;

@@ -1,3 +1,5 @@
+// Make sure declare button works properly
+
 // TODO: Make things look nice on all screens
 
 // TODO: Add winning screen
@@ -86,7 +88,7 @@ setInterval(function () {
         for (var player in num_cards) {
             for (var i = 1; i <= 6; i++) {
                 if (document.getElementById("player" + i).innerHTML == player) {
-                    document.getElementById("score" + i).innerHTML = num_cards[player];
+                    document.getElementById("hand" + i).innerHTML = num_cards[player];
                     if (num_cards[player] == 0) {
                         document.getElementById("player" + i).style.backgroundColor = "lightgray";
                     }
@@ -192,21 +194,21 @@ document.getElementById("declare").addEventListener("click", function() {
     });
 });
 
-document.getElementById("player2").addEventListener("click", function () {
+document.getElementById("player-div2").addEventListener("click", function () {
     if (! declaring) {
         asked = document.getElementById("player2").innerHTML;
         ask_player();
     }
 });
 
-document.getElementById("player4").addEventListener("click", function () {
+document.getElementById("player-div4").addEventListener("click", function () {
     if (! declaring) {
         asked = document.getElementById("player4").innerHTML;
         ask_player();
     }
 });
 
-document.getElementById("player6").addEventListener("click", function () {
+document.getElementById("player-div6").addEventListener("click", function () {
     if (! declaring) {
         asked = document.getElementById("player6").innerHTML;
         ask_player();
@@ -381,21 +383,21 @@ function go_thorugh_cards(half_suit, players_chosen, iteration) {
         
         var player_element = document.getElementById("player1");
         player_element.parentNode.replaceChild(player_element.cloneNode(true), player_element); // Removes previous event listeners
-        document.getElementById("player1").addEventListener("click", function () {
+        document.getElementById("player-div1").addEventListener("click", function () {
             console.log(document.getElementById("player1").innerHTML);
             players_chosen.push(document.getElementById("player1").innerHTML);
             go_thorugh_cards(half_suit, players_chosen, iteration + 1);
         });
         var player_element = document.getElementById("player3");
         player_element.parentNode.replaceChild(player_element.cloneNode(true), player_element); // Removes previous event listeners
-        document.getElementById("player3").addEventListener("click", function () {
+        document.getElementById("player-div3").addEventListener("click", function () {
             console.log(document.getElementById("player3").innerHTML);
             players_chosen.push(document.getElementById("player3").innerHTML);
             go_thorugh_cards(half_suit, players_chosen, iteration + 1);
         });
         var player_element = document.getElementById("player5");
         player_element.parentNode.replaceChild(player_element.cloneNode(true), player_element); // Removes previous event listeners
-        document.getElementById("player5").addEventListener("click", function () {
+        document.getElementById("player-div5").addEventListener("click", function () {
             console.log(document.getElementById("player5").innerHTML);
             players_chosen.push(document.getElementById("player5").innerHTML);
             go_thorugh_cards(half_suit, players_chosen, iteration + 1);
