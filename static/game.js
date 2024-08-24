@@ -64,7 +64,7 @@ roommates.then(function(data) {
     }
 });
 
-/*
+
 // Determines whose turn it is and updates the screen as needed
 setInterval(function () {
     update_hand();
@@ -152,7 +152,7 @@ setInterval(function () {
         }
     });
 }, 2500); // Change timer later to be shorter
-*/
+
 // Allows the player to begin declaring
 document.getElementById("declare").addEventListener("click", function() {
     declaring = true;
