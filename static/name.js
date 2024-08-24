@@ -1,4 +1,4 @@
-var room_name = localStorage.getItem("room");
+var room_name = localStorage.getItem("room_name");
 
 document.getElementById("submit-name").addEventListener("click", function() {
     var name = document.getElementById("name").value;
