@@ -1,12 +1,8 @@
-// Make sure declare button works properly
-
-// TODO: Make things look nice on all screens
-
-// TODO: Add winning screen
+// TODO: Make sure declare button works properly
 
 // TODO: Ensure that this is scalable
 
-// TODO: delete game data when finished or timedout
+// TODO: delete game data when finished or timedout (clear local storage)
 
 // TODO: publish site
 
@@ -96,10 +92,19 @@ setInterval(function () {
             }
         }
         document.getElementById("team-score").innerHTML = "Team: " + scores[my_team];
+        if (scores[my_team] >= 5) {
+            window.location.replace("/win");
+        }
         if (my_team == 1) {
             document.getElementById("opponent-score").innerHTML = "Opponents: " + scores[0];
+            if (scores[0] >= 5) {
+                window.location.replace("/lose");
+            }
         } else {
             document.getElementById("opponent-score").innerHTML = "Opponents: " + scores[1];
+            if (score[1] >= 5) {
+                window.location.replace("/lose");
+            }
         }
         declaring = data["declaring"] == "true";
         var declarer = "";

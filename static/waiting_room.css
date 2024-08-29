@@ -1,0 +1,31 @@
+html {
+    background-color: #bdded5;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+}
+
+h1 {
+    position: absolute;
+    color: #bb1b1b;
+    height: 5vh;
+    width: 100vw;
+    font-size: 5vh;
+    top: 15vh;
+    text-align: center;
+    left: 0vw;
+}
+
+button {
+    position: absolute;
+    color: #2a2ca5;
+    background-color: #94aea6;
+    height: 5vh;
+    width: 15vw;
+    top: 35vh;
+    left: 42.5vw;
+    font-size: 200%;
+}

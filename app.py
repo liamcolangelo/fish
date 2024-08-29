@@ -163,6 +163,14 @@ def declare():
     games[room].declare(half_suit, players_selected, team)
     return jsonify({"processed": "true"})
 
+@app.route("/win")
+def won():
+    return render_template("win.html")
+
+@app.route("/lose")
+def lose():
+    return render_template("lose.html")
+
 # Runs the app
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
