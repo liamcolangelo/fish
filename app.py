@@ -159,6 +159,7 @@ def declare():
     room = info[0]
     half_suit = info[1]
     players_selected = info[2]
+    print(players_selected)
     team = info[3]
     games[room].declare(half_suit, players_selected, team)
     return jsonify({"processed": "true"})

@@ -175,6 +175,7 @@ class Game:
 		self.declaring_player = player
 
 	def declare(self, half_suit, players_selected, team):
+		print(players_selected)
 		self.declaring = "false"
 		self.declaring_player = None
 		correct = True

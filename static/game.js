@@ -4,7 +4,7 @@
 
 // TODO: delete game data when finished or timedout (clear local storage)
 
-// TODO: publish site
+// TODO: publish site (remove the test game)
 
 // Constants throughout game
 var room_name = localStorage.getItem("room");
@@ -80,7 +80,6 @@ setInterval(function () {
         document.getElementById("last-move").innerHTML = last_move
         var scores = data["score"]
         var num_cards = data["card_nums"];
-        console.log(num_cards);
         for (var player in num_cards) {
             for (var i = 1; i <= 6; i++) {
                 if (document.getElementById("player" + i).innerHTML == player) {
@@ -102,11 +101,14 @@ setInterval(function () {
             }
         } else {
             document.getElementById("opponent-score").innerHTML = "Opponents: " + scores[1];
-            if (score[1] >= 5) {
+            if (scores[1] >= 5) {
                 window.location.replace("/lose");
             }
         }
+
+        // TODO: Not updating the bubbles correctly or stop other people from clicking stuff
         declaring = data["declaring"] == "true";
+        console.log(declaring);
         var declarer = "";
         if (declaring) {
             declarer = data["declarer"];
@@ -127,7 +129,7 @@ setInterval(function () {
         var opponent_bubbles = document.getElementsByClassName("opponent");
 
         // Stops player from doing anything if someone is delcarng
-        if (declaring && declarer != my_name) {
+        if (declaring && (declarer != my_name)) {
             for (var i = 1; i <= 6; i++) {
                 document.getElementById("player" + i).pointerEvents = "none";
             }
@@ -371,7 +373,7 @@ function ask_player() {
 }
 
 function go_thorugh_cards(half_suit, players_chosen, iteration) {
-    if (iteration == 6) {
+    if (iteration >= 6) {
         document.getElementById("declare-card").setAttribute("hidden", "true");
         $.ajax({
             type: "POST",
@@ -383,27 +385,25 @@ function go_thorugh_cards(half_suit, players_chosen, iteration) {
     } else {
         if (iteration == 0) {
             document.getElementById("declare-card").removeAttribute("hidden");
+            players_chosen = [];
         }
         document.getElementById("declare-card-image").src = "/images?image=" + half_suits[half_suit][iteration] + ".jpg";
         
-        var player_element = document.getElementById("player1");
+        var player_element = document.getElementById("player-div1");
         player_element.parentNode.replaceChild(player_element.cloneNode(true), player_element); // Removes previous event listeners
         document.getElementById("player-div1").addEventListener("click", function () {
-            console.log(document.getElementById("player1").innerHTML);
             players_chosen.push(document.getElementById("player1").innerHTML);
             go_thorugh_cards(half_suit, players_chosen, iteration + 1);
         });
-        var player_element = document.getElementById("player3");
+        var player_element = document.getElementById("player-div3");
         player_element.parentNode.replaceChild(player_element.cloneNode(true), player_element); // Removes previous event listeners
         document.getElementById("player-div3").addEventListener("click", function () {
-            console.log(document.getElementById("player3").innerHTML);
             players_chosen.push(document.getElementById("player3").innerHTML);
             go_thorugh_cards(half_suit, players_chosen, iteration + 1);
         });
-        var player_element = document.getElementById("player5");
+        var player_element = document.getElementById("player-div5");
         player_element.parentNode.replaceChild(player_element.cloneNode(true), player_element); // Removes previous event listeners
         document.getElementById("player-div5").addEventListener("click", function () {
-            console.log(document.getElementById("player5").innerHTML);
             players_chosen.push(document.getElementById("player5").innerHTML);
             go_thorugh_cards(half_suit, players_chosen, iteration + 1);
         });
