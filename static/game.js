@@ -107,7 +107,6 @@ setInterval(function () {
             }
         }
 
-        // TODO: Not updating the bubbles correctly or stop other people from clicking stuff
         declaring = data["declaring"] == "true";
         var declarer = "";
         if (declaring) {
