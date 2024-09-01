@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, jsonify, send_file
 import fish
+import json
 from redis_client import redis_client
 
 
@@ -167,4 +168,5 @@ def redis_test():
 
 # Runs the app
 if __name__ == "__main__":
+    redis_client.set("Games" : json.loads({}))
     app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
