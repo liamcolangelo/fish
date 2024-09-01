@@ -181,7 +181,7 @@ def lose():
 @app.route("/redis_test")
 def redis_test():
     value = redis_client.get("test_value")
-    return jsonify({"test_value": str(value)})
+    return jsonify({"test_value": value.decode('utf-8')})
 
 # Runs the app
 if __name__ == "__main__":
