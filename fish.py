@@ -1,4 +1,7 @@
 import random
+from redis_client import redis_client
+import json
+
 
 half_suits = {
 	"eights" : ["H8", "C8", "S8", "D8", "RJ", "BJ"],
@@ -16,7 +19,6 @@ standard_deck = ["RJ", "BJ", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H1
 				 "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "CJ", "CQ", "CK", "CA",
 				 "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "SJ", "SQ", "SK", "SA",
 				 "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "DJ", "DQ", "DK", "DA"]
-
 
 
 def gen_hands():
@@ -75,138 +77,140 @@ def get_full_card_name(card):
 		full_name = "Black Joker"
 	return full_name
 
+def get_game_data(room):
+	return json.loads(redis_client.get(room).decode("utf-8"))
 
-class Player:
-	def __init__(self, name, hand=[]):
-		self.hand = hand
-		self.name = name
+def set_game_data(room, data):
+	redis_client.set(room, json.dumps(data))
 
-	def __str__(self):
-		return f"Name: {self.name} Cards: {self.hand}"
-
-	def has_card(self, card):
-		return card in self.hand
-
-	def give_card(self, card):
-		if self.has_card(card):
-			self.hand.remove(card)
-			return card
-		else:
-			return ""
-
-	def take_card(self, card):
-		self.hand.append(card)
+def create_player(name, room, hand=[]):
+	game_data = get_game_data(room)
+	try:
+		game_data["players"][name]
+		return False
+	except KeyError:
+		player_data = {
+			"name": name,
+			"hand": hand
+		}
+		game_data["players"].append(player_data)
+		redis_client.set(room, game_data)
+		return True
 	
-	def new_hand(self, hand):
-		self.hand = hand
 
+def create_room(room):
+	if redis_client.get(room) is None:
+		json_data = {
+			"room_name": room,
+			"players": [],
+			"turn": "",
+			"declaring": "false",
+			"declaring_player": "",
+			"last_move": "Not started",
+			"points": [0,0],
+			"remaining_half_suits": ["eights", "low_clubs", "low_hearts", "low_spades", "low_diamonds", "high_hearts", "high_clubs", "high_spades", "high_clubs"]
+		}
+		set_game_data(room, json_data)
+		return True
+	else:
+		return False
 
-class Game:
-	def __init__(self, name, players=[]):
-		self.name = name
-		self.players = players
-		self.started = False
-		self.creator = None
-		self.turn = None
-		self.declaring = "false"
-		self.declaring_player = None
-		self.last_move = "First Move"
-		self.points = [0,0]
-		self.remaining_half_suits = ["eights", "low_clubs", "low_hearts", "low_spades", "low_diamonds", "high_hearts", "high_clubs", "high_spades", "high_clubs"]
-		if len(players) > 0:
-			self.creator = players[0]
+def is_room_full(room):
+	game_data = get_game_data(room)
+	return len(game_data["players"]) == 6
 
-	def is_full(self):
-		return len(self.players) == 6
+def start_game(room):
+	game_data = get_game_data(room)
+	if is_room_full(room):
+		hands = gen_hands()
+		for i in range(6):
+			game_data["players"][i]["hand"] = hands[i]
+		game_data["turn"] = game_data["players"][0]["name"]
+		return True
+	else:
+		return False
 	
-	def add_player(self, player: Player):
-		self.players.append(player)
+def get_players(room):
+	game_data = get_game_data(room)
+	names = []
+	for i in range(6):
+		names.append(game_data["players"][i]["name"])
+	return names
 
-	def start(self):
-		if len(self.players) == 6:
-			hands = gen_hands()
-			for i in range(6):
-				self.players[i].new_hand(hands[i])
-			self.started = True
-			self.turn = self.players[0].name
-			return True
+def get_player_hand(room, player):
+	game_data = get_game_data(room)
+	for i in range(6):
+		if game_data["players"][i]["name"] == player:
+			return game_data["players"][i]["hand"]
+		
+def get_turn(room):
+	return get_game_data(room)["turn"]
+
+def take_turn(room, asking, card, asked):
+	game_data = get_game_data(room)
+	asking_index = -1
+	asked_index = -1
+	for i in range(6):
+		if game_data["players"][i]["name"] == asking:
+			asking_index = i
+		elif game_data["players"][i]["name"] == asked:
+			asked_index = i
+		if asking_index != -1 and asked_index != -1:
+			break
+	if card in game_data["players"][asked_index]["hand"]:
+		game_data["players"][asked_index]["hand"].remove(card)
+		game_data["players"][asking_index]["hand"].append(card)
+	else:
+		game_data["turn"] = asked
+	
+
+def begin_declaring(room, player):
+	game_data = get_game_data(room)
+	game_data["declaring"] = "true"
+	game_data["declaring_player"] = player
+	set_game_data(room, game_data)
+
+def declare(room, half_suit, players_selected, team):
+	game_data = get_game_data(room)
+	game_data["declaring"] = "false"
+	game_data["declaring_player"] = ""
+	players_selected_indices = []
+	for player in players_selected:
+		for i in range(6):
+			if game_data["players"][i]["name"] == player:
+				players_selected_indices.append(i)
+				break
+	correct = True
+	for i in range(6):
+		if not (half_suits[half_suit][i] in game_data["players"][players_selected_indices[i]]["hand"]):
+			game_data["last_move"] = "Incorrectly declared" + half_suit.replace("_", " ").capitalize()
+			correct = False
+			break
+	for card in half_suits[half_suit]:
+		for i in range(6):
+			try:
+				game_data["players"][i]["hand"].remove(card)
+				break
+			except ValueError:
+				pass
+	if correct:
+		game_data["last_move"] = "Correctly declared " + half_suit.replace("_", " ").capitalize()
+		game_data["points"][team] += 1
+	else:
+		if team == 1:
+			game_data["points"][0] += 1
 		else:
-			return False
+			game_data["points"][1] += 1
+	game_data["remaining_half_suits"].remove(half_suit)
+	set_game_data(room, game_data)
+	return correct
 
-	def get_players(self):
-		names = []
-		for player in self.players:
-			names.append(player.name)
-		return names
+def get_remaining_half_suits(room):
+	return get_game_data(room)["remaining_half_suits"]
 
-	def get_player_hand(self, player_name):
-		for player in self.players:
-			if player.name == player_name:
-				return player.hand
-			
-	def get_player_names(self):
-		names = []
-		for player in self.players:
-			names.append(player.name)
-		return names
-
-	def get_turn(self):
-		return self.turn
-
-	def take_turn(self, asking, card, asked):
-		if asking != self.turn:
-			return
-		else:
-			for player in self.players:
-				if player.name == asking:
-					for other_player in self.players:
-						if other_player.name == asked:
-							if other_player.has_card(card):
-								player.take_card(other_player.give_card(card))
-								self.last_move = asking + " got " + get_full_card_name(card) + " from " + asked
-								return
-							else:
-								self.turn = other_player.name
-								self.last_move = asking + " asked " + asked + " for " + get_full_card_name(card)
-								return
-							
-	def begin_declaring(self, player):
-		self.declaring = "true"
-		self.declaring_player = player
-
-	def declare(self, half_suit, players_selected, team):
-		print(players_selected)
-		self.declaring = "false"
-		self.declaring_player = None
-		correct = True
-		for i in range(len(players_selected)):
-			for player in self.players:
-				if not player.has_card(half_suits[half_suit][i]):
-					self.last_move = "Incorrectly declared " + half_suit.replace("_", " ").capitalize()
-					correct = False
-		for card in half_suits[half_suit]:
-			for player in self.players:
-				player.give_card(card)
-
-		if correct:
-			self.last_move = "Correctly declared " + half_suit.replace("_" + " ").capitalize()
-			self.points[team] += 1
-		else:
-			if team == 1:
-				self.points[0] += 1
-			else:
-				self.points[1] += 1
-		self.remaining_half_suits.remove(half_suit)
-		return correct
-
-	def get_remaining_half_suits(self):
-		return self.remaining_half_suits
-
-	def get_players_cards_num(self):
-		nums = {}
-		for player in self.players:
-			nums[player.name] = len(player.hand)
-		return nums
-
-	def __str__(self):
-		return f"Number of players: {len(self.players)}"
+def get_players_cards_num(room):
+	game_data = get_game_data(room)
+	nums = {}
+	for i in range(6):
+		nums[game_data["players"][i]["name"]] = len(game_data["players"][i]["hand"])
+	return nums
