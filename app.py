@@ -9,7 +9,7 @@ app = Flask(__name__, template_folder="templates")
 try:
     fish.get_all_games()
 except AttributeError:
-    redis_client.set("Games", json.loads({}))
+    redis_client.set("Games", json.dumps({}))
 
 # Only for testing, remove later
 demo_names = ["Liam", "Henley", "Justin", "Chase", "Carter", "Nathan"]
