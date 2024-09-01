@@ -168,5 +168,5 @@ def redis_test():
 
 # Runs the app
 if __name__ == "__main__":
-    redis_client.set("Games" : json.loads({}))
+    redis_client.set("Games", json.loads({}))
     app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
