@@ -93,7 +93,7 @@ def get_all_games():
 
 def create_player(name, room, hand=[]):
 	game_data = get_game_data(room)
-	for i in len(game_data["players"]):
+	for i in range(len(game_data["players"])):
 		if game_data["players"][i]["name"] == name:
 			return False
 	player_data = {
