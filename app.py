@@ -177,22 +177,12 @@ def won():
 def lose():
     return render_template("lose.html")
 
-@app.route("/redis_test_post")
+@app.route("/redis_test")
 def redis_test():
-    data = redis_client.hgetall("test_value")
-    data = {key.decode('utf-8'): value.decode('utf-8') for key, value in data.items()}
-    print(data)
-    return jsonify(data)
-
-@app.route("/redis_ping")
-def ping_redis():
-    try:
-        response = redis_client.ping()
-        print(response)
-        return jsonify({"processed": "true"})
-    except redis.exceptions.RedisError as e:
-        print(e)
+    value = redis_client.get("test_value")
+    return jsonify({"test_value": value.decode("utf-8")})
 
 # Runs the app
 if __name__ == "__main__":
+    redis_client.set("test_value", "Hello, world!")
     app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
