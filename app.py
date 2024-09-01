@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, request, jsonify, send_file
+import redis
 import fish
 from redis_client import redis_client
 
@@ -183,7 +184,15 @@ def redis_test():
     print(data)
     return jsonify(data)
 
+@app.route("/redis_ping")
+def ping_redis():
+    try:
+        response = redis_client.ping()
+        print(response)
+        return jsonify({"processed": "true"})
+    except redis.exceptions.RedisError as e:
+        print(e)
+
 # Runs the app
 if __name__ == "__main__":
-    redis_client.hmset("test_value", {"val1": "1", "val2": "2"})
     app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
