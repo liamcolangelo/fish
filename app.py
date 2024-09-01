@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, jsonify, send_file
 import fish
+from redis_client import redis_client
 
 
 app = Flask(__name__, template_folder="templates")
@@ -175,6 +176,14 @@ def won():
 def lose():
     return render_template("lose.html")
 
+@app.route("/redis_test_post")
+def redis_test():
+    data = redis_client.hgetall("test_value")
+    data = {key.decode('utf-8'): value.decode('utf-8') for key, value in data.items()}
+    print(data)
+    return jsonify(data)
+
 # Runs the app
 if __name__ == "__main__":
+    redis_client.hmset("test_value", ["test1", "test2"])
     app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
