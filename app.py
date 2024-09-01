@@ -6,6 +6,10 @@ from redis_client import redis_client
 
 
 app = Flask(__name__, template_folder="templates")
+try:
+    fish.get_game_data()
+except AttributeError:
+    redis_client.set("Games", json.loads({}))
 
 # Only for testing, remove later
 demo_names = ["Liam", "Henley", "Justin", "Chase", "Carter", "Nathan"]
@@ -17,10 +21,6 @@ fish.start_game("My room")
 # The home page for the game where they choose their name and begin the game
 @app.route("/")
 def home():
-    try:
-        fish.get_game_data()
-    except AttributeError:
-        redis_client.set("Games", json.loads({}))
     redis_client.set("test_value", "Hello, world!")
     return render_template("home.html")
 
