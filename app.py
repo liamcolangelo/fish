@@ -7,7 +7,7 @@ from redis_client import redis_client
 
 app = Flask(__name__, template_folder="templates")
 try:
-    fish.get_game_data()
+    fish.get_all_games()
 except AttributeError:
     redis_client.set("Games", json.loads({}))
 
