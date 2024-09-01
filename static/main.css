@@ -53,6 +53,10 @@ button {
     margin-top: 1%;
 }
 
+#reenter-room {
+    
+}
+
 input[type="radio"] {
     display: none;
 }

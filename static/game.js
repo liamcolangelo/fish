@@ -76,8 +76,15 @@ setInterval(function () {
     });
 
     game_data.then(function (data) {
-        turn = data["turn"]
         last_move = data["last_move"]
+        if (last_move == "timedout") {
+            localStorage.setItem("name", "");
+            localStorage.setItem("room", "");
+            alert("Game does not exist");
+            window.location.replace("/");
+        }
+
+        turn = data["turn"]
         document.getElementById("last-move").innerHTML = last_move
         var scores = data["score"]
         var num_cards = data["card_nums"];
@@ -297,16 +304,6 @@ function get_half_suit_from_card(card) {
     }
 }
 
-// Checks if a player is on the same team
-function on_my_team(player) {
-    for (var i = 0; i < my_team.length; i++) {
-        if (player == my_team[i]) {
-            return true;
-        }
-    }
-    return false;
-}
-
 // Returns the hand organized by half-suits
 // They are ordered the way that I like them which is by alternating color
 function organize_by_half_suit(hand) {
@@ -413,3 +410,4 @@ function go_thorugh_cards(half_suit, players_chosen, iteration) {
         });
     }
 }
+

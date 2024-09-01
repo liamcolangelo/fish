@@ -129,15 +129,18 @@ def gamestate():
         games[room].take_turn(asking, card, asked)
         return jsonify({"processed": "true"})
     else:
-        turn = games[room].get_turn()
-        return jsonify({
-            "turn": turn,
-            "declaring": games[room].declaring,
-            "declarer": games[room].declaring_player,
-            "last_move": games[room].last_move,
-            "score": games[room].points,
-            "card_nums": games[room].get_players_cards_num()
-            })
+        if (games[room]):
+            turn = games[room].get_turn()
+            return jsonify({
+                "turn": turn,
+                "declaring": games[room].declaring,
+                "declarer": games[room].declaring_player,
+                "last_move": games[room].last_move,
+                "score": games[room].points,
+                "card_nums": games[room].get_players_cards_num()
+                })
+        else:
+            return jsonify({"last_move": "timedout"})
 
 @app.route("/begin_declaration", methods=["POST"])
 def begin_declaration():

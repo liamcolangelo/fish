@@ -47,3 +47,7 @@ document.getElementById("dynamic-form").addEventListener("submit", function (eve
     localStorage.setItem("room_name", room_name);
     window.location.replace("/choose_name");
 });
+
+document.getElementById("reenter-room").addEventListener("click", function () {
+    window.location.replace("/game");
+});

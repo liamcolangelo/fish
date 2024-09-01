@@ -1,6 +1,5 @@
-// Add a list of people in the room
-// Add a button for the room creator to begin the game
-// Maybe add a minigame or nice animation for the people waiting
+// TODO: Maybe Add a list of people in the room
+// TODO: Maybe add a minigame or nice animation for the people waiting
 var creator = localStorage.getItem("creator");
 var username = localStorage.getItem("name")
 var room_name = localStorage.getItem("room");
