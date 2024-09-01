@@ -185,5 +185,5 @@ def redis_test():
 
 # Runs the app
 if __name__ == "__main__":
-    redis_client.hmset("test_value", ["test1", "test2"])
+    redis_client.hmset("test_value", {"val1": "1", "val2": "2"})
     app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
