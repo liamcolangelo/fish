@@ -17,6 +17,10 @@ fish.start_game("My room")
 # The home page for the game where they choose their name and begin the game
 @app.route("/")
 def home():
+    try:
+        fish.get_game_data()
+    except AttributeError:
+        redis_client.set("Games", json.loads({}))
     redis_client.set("test_value", "Hello, world!")
     return render_template("home.html")
 
@@ -168,5 +172,4 @@ def redis_test():
 
 # Runs the app
 if __name__ == "__main__":
-    redis_client.set("Games", json.loads({}))
     app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
