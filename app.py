@@ -22,6 +22,7 @@ games["My room"].start()
 # The home page for the game where they choose their name and begin the game
 @app.route("/")
 def home():
+    redis_client.set("test_value", "Hello, world!")
     return render_template("home.html")
 
 # Where the names are sent when chosen
@@ -184,5 +185,4 @@ def redis_test():
 
 # Runs the app
 if __name__ == "__main__":
-    redis_client.set("test_value", "Hello, world!")
     app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
