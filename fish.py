@@ -93,17 +93,16 @@ def get_all_games():
 
 def create_player(name, room, hand=[]):
 	game_data = get_game_data(room)
-	try:
-		game_data["players"][name]
-		return False
-	except KeyError:
-		player_data = {
-			"name": name,
-			"hand": hand
-		}
-		game_data["players"].append(player_data)
-		redis_client.set(room, game_data)
-		return True
+	for i in len(game_data["players"]):
+		if game_data["players"][i]["name"] == name:
+			return False
+	player_data = {
+		"name": name,
+		"hand": hand
+	}
+	game_data["players"].append(player_data)
+	redis_client.set(room, game_data)
+	return True
 	
 
 def create_room(room):
