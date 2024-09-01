@@ -78,10 +78,18 @@ def get_full_card_name(card):
 	return full_name
 
 def get_game_data(room):
-	return json.loads(redis_client.get(room).decode("utf-8"))
+	try:
+		return json.loads(redis_client.get("Games").decode("utf-8"))[room]
+	except KeyError:
+		return False
 
 def set_game_data(room, data):
-	redis_client.set(room, json.dumps(data))
+	all_data = json.loads(redis_client.get("Games").decode("utf-8"))
+	all_data[room] = data
+	redis_client.set("Games", json.dumps(all_data))
+
+def get_all_games():
+	return json.loads(redis_client.get("Games").decode("utf-8")).keys()
 
 def create_player(name, room, hand=[]):
 	game_data = get_game_data(room)
@@ -104,6 +112,7 @@ def create_room(room):
 			"room_name": room,
 			"players": [],
 			"turn": "",
+			"started": "false",
 			"declaring": "false",
 			"declaring_player": "",
 			"last_move": "Not started",
@@ -126,9 +135,15 @@ def start_game(room):
 		for i in range(6):
 			game_data["players"][i]["hand"] = hands[i]
 		game_data["turn"] = game_data["players"][0]["name"]
+		game_data["started"] = "true"
+		set_game_data(room, game_data)
 		return True
 	else:
 		return False
+	
+def is_started(room):
+	game_data = get_game_data(room)
+	return game_data["started"] == "true"
 	
 def get_players(room):
 	game_data = get_game_data(room)
@@ -214,3 +229,16 @@ def get_players_cards_num(room):
 	for i in range(6):
 		nums[game_data["players"][i]["name"]] = len(game_data["players"][i]["hand"])
 	return nums
+
+def get_gamestate(room):
+	game_data = get_game_data(room)
+	if game_data:
+		gamestate = {}
+		gamestate["turn"] = game_data["turn"]
+		gamestate["declaring"] = game_data["declaring"]
+		gamestate["declarer"] = game_data["declarer"]
+		gamestate["last_move"] = game_data["last_move"]
+		gamestate["score"] = game_data["score"]
+		gamestate["card_nums"] = get_players_cards_num(room)
+		return gamestate
+	return False

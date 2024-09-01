@@ -1,23 +1,17 @@
 import os
 from flask import Flask, render_template, request, jsonify, send_file
-import redis
 import fish
 from redis_client import redis_client
 
 
 app = Flask(__name__, template_folder="templates")
 
-# Each key for players is the player's chosen name, the value is when they signed in.
-# This way, names can be freed after a certain time, or when their game ends.
-games = {}
-
 # Only for testing, remove later
 demo_names = ["Liam", "Henley", "Justin", "Chase", "Carter", "Nathan"]
-for i in range(len(demo_names)):
-    demo_names[i] = fish.Player(demo_names[i])
-
-games["My room"] = fish.Game("My room", demo_names)
-games["My room"].start()
+fish.create_room("My room")
+for name in demo_names:
+    fish.create_player(name, "My room")
+fish.start_game("My room")
 
 # The home page for the game where they choose their name and begin the game
 @app.route("/")
@@ -32,10 +26,7 @@ def add_player():
     info = request.get_json()
     name = info[0]
     room_name = info[1]
-    print(room_name)
-    print(games)
-    if not name in games[room_name].get_player_names():
-        games[room_name].add_player(fish.Player(name))
+    if fish.create_player(name, room_name):
         return jsonify({'processed': 'true'})
     else:
         return jsonify({'processed': 'true', "error": "Name already in use"}), 400
@@ -43,16 +34,14 @@ def add_player():
 @app.route("/find_rooms", methods=["GET", "POST"])
 def find_rooms():
     if request.method == "GET":
-        game_names = []
-        for game in games:
-            game_names.append(games[game].name)
+        game_names = fish.get_all_games()
         return jsonify({"processed": "true", "games": game_names})
     else:
         info = request.get_json()
         room_name = info[0]
-        if room_name in games:
+        if room_name in fish.get_all_games():
             return jsonify({"processed": "true", "error": "Name already exists"}), 400
-        games[room_name] = fish.Game(room_name) # Look here
+        fish.create_room(room_name)
         return jsonify({"processed": "true"})
     
 @app.route("/create_room")
@@ -64,7 +53,7 @@ def join_room():
     info = request.get_json()
     player_name = info[0]
     room_name = info[1]
-    games[room_name].add_player(fish.Player(player_name))
+    fish.create_player(player_name, room_name)
     return jsonify({"processed": "true"})
 
 @app.route("/choose_name")
@@ -78,12 +67,12 @@ def send_to_waiting():
         room_name = info[0]
         creator = info[1]
         if creator == "true":
-            if games[room_name].start():
+            if fish.start_game(room_name):
                 return jsonify({"processed": "true"})
             else:
                 return jsonify({"processed": "true", "error": "Not enough players"}), 400
         else:
-            if games[room_name].started:
+            if fish.is_started(room_name):
                 return jsonify({"processed": "true"})
             else:
                 return jsonify({"processed": "true", "error": "Not started yet"}), 400
@@ -98,7 +87,7 @@ def game_function():
 def get_roommates():
     room_name = request.args.get("room")
     room_name = room_name.replace("%20", " ")
-    players = games[room_name].get_players()
+    players = fish.get_players(room_name)
     return jsonify({
         "names": players,
         "teams": [0,0,0,1,1,1] # TODO! Make teams random or allow for choosing later
@@ -108,7 +97,7 @@ def get_roommates():
 def get_hand():
     room_name = request.args.get("room")
     player_name = request.args.get("name")
-    hand = games[room_name].get_player_hand(player_name)
+    hand = fish.get_player_hand(room_name, player_name)
     return jsonify({
         "hand": hand
     })
@@ -129,19 +118,12 @@ def gamestate():
         asked = info[2] # The player that asking asked for the card
         # Consider putting the handler in a seperate thread to if traffic increases
         #   Not sure if this would actually help, just an idea for later
-        games[room].take_turn(asking, card, asked)
+        fish.take_turn(room, asking, card, asked)
         return jsonify({"processed": "true"})
     else:
-        if (games[room]):
-            turn = games[room].get_turn()
-            return jsonify({
-                "turn": turn,
-                "declaring": games[room].declaring,
-                "declarer": games[room].declaring_player,
-                "last_move": games[room].last_move,
-                "score": games[room].points,
-                "card_nums": games[room].get_players_cards_num()
-                })
+        gamestate = fish.get_gamestate(room)
+        if gamestate:
+            return jsonify(gamestate)
         else:
             return jsonify({"last_move": "timedout"})
 
@@ -150,13 +132,13 @@ def begin_declaration():
     info = request.get_json()
     room = info[0]
     player = info[1]
-    games[room].begin_declaring(player)
+    fish.begin_declaring(room, player)
     return jsonify({"processed": "true"})
 
 @app.route("/remaining_half_suits", methods=["GET"])
 def get_remaining_half_suits():
     room = request.args.get("room")
-    half_suits = games[room].get_remaining_half_suits()
+    half_suits = fish.get_remaining_half_suits(room)
     return jsonify({"half_suits": half_suits})
 
 @app.route("/declare", methods=["POST"])
@@ -167,7 +149,7 @@ def declare():
     players_selected = info[2]
     print(players_selected)
     team = info[3]
-    games[room].declare(half_suit, players_selected, team)
+    fish.declare(room, half_suit, players_selected, team)
     return jsonify({"processed": "true"})
 
 @app.route("/win")
