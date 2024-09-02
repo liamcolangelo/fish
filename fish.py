@@ -201,6 +201,7 @@ def take_turn(room, asking, card, asked):
 		game_data["last_move"] = asking + " got " + get_full_card_name(card) + " from " + asked
 	else:
 		game_data["turn"] = asked
+		game_data["last_move"] = asking + " asked " + asked + " for the " + get_full_card_name(card)
 	set_game_data(room, game_data)
 	
 

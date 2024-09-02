@@ -11,17 +11,10 @@ try:
 except AttributeError:
     redis_client.set("Games", json.dumps({}))
 
-# Only for testing, remove later
-demo_names = ["Liam", "Henley", "Justin", "Chase", "Carter", "Nathan"]
-fish.create_room("My room")
-for name in demo_names:
-    fish.create_player(name, "My room")
-fish.start_game("My room")
 
 # The home page for the game where they choose their name and begin the game
 @app.route("/")
 def home():
-    redis_client.set("test_value", "Hello, world!")
     return render_template("home.html")
 
 # Where the names are sent when chosen
@@ -98,7 +91,7 @@ def get_roommates():
     players = fish.get_players(room_name)
     return jsonify({
         "names": players,
-        "teams": [0,0,0,1,1,1] # TODO! Make teams random or allow for choosing later
+        "teams": [0,0,0,1,1,1]
     })
 
 @app.route("/hands")
@@ -168,10 +161,6 @@ def won():
 def lose():
     return render_template("lose.html")
 
-@app.route("/redis_test")
-def redis_test():
-    value = redis_client.get("test_value")
-    return jsonify({"test_value": value.decode('utf-8')})
 
 # Runs the app
 if __name__ == "__main__":

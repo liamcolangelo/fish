@@ -1,7 +1,3 @@
-// TODO: Ensure that this is scalable
-
-// TODO: delete game data when finished or timedout (clear local storage)
-
 // TODO: publish site (remove the test game)
 
 // Constants throughout game
@@ -171,7 +167,7 @@ setInterval(function () {
             }
         }
     });
-}, 2500); // TODO: Change timer later to be shorter
+}, 2500);
 
 // Allows the player to begin declaring
 document.getElementById("declare").addEventListener("click", function() {
