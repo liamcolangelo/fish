@@ -44,7 +44,7 @@ document.getElementById("dynamic-form").addEventListener("submit", function (eve
     event.preventDefault();
     const room_name = document.querySelector("input[name='roomName']:checked").value;
     localStorage.setItem("creator", "false");
-    localStorage.setItem("room_name", room_name);
+    localStorage.setItem("room", room_name);
     window.location.replace("/choose_name");
 });
 

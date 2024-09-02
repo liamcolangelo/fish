@@ -117,7 +117,7 @@ def create_room(room):
 			"turn": "",
 			"started": "false",
 			"declaring": "false",
-			"declaring_player": "",
+			"declarer": "",
 			"last_move": "Not started",
 			"points": [0,0],
 			"remaining_half_suits": ["eights", "low_clubs", "low_hearts", "low_spades", "low_diamonds", "high_hearts", "high_clubs", "high_spades", "high_clubs"]
@@ -185,13 +185,13 @@ def take_turn(room, asking, card, asked):
 def begin_declaring(room, player):
 	game_data = get_game_data(room)
 	game_data["declaring"] = "true"
-	game_data["declaring_player"] = player
+	game_data["declarer"] = player
 	set_game_data(room, game_data)
 
 def declare(room, half_suit, players_selected, team):
 	game_data = get_game_data(room)
 	game_data["declaring"] = "false"
-	game_data["declaring_player"] = ""
+	game_data["declarer"] = ""
 	players_selected_indices = []
 	for player in players_selected:
 		for i in range(6):

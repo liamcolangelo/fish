@@ -10,7 +10,7 @@ document.getElementById("submit").addEventListener("click", function() {
             contentType: "application/json",
             dataType: "json",
             success: function () {
-                localStorage.setItem("room_name", room_name);
+                localStorage.setItem("room", room_name);
                 localStorage.setItem("creator", "true");
                 window.location.replace("/choose_name");
             },
