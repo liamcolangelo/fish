@@ -22,6 +22,7 @@ standard_deck = ["RJ", "BJ", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H1
 
 
 def gen_hands():
+	global standard_deck
 	hands = []
 	for hand in range(6):
 		hands.append([])
@@ -29,7 +30,10 @@ def gen_hands():
 			choice = random.choice(standard_deck)
 			standard_deck.remove(choice)
 			hands[hand].append(choice)
-
+	standard_deck = ["RJ", "BJ", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10", "HJ", "HQ", "HK", "HA",
+				 "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "CJ", "CQ", "CK", "CA",
+				 "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "SJ", "SQ", "SK", "SA",
+				 "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "DJ", "DQ", "DK", "DA"]
 	return hands
 
 def in_same_half_suits(c1, c2):
@@ -89,7 +93,7 @@ def set_game_data(room, data):
 	redis_client.set("Games", json.dumps(all_data))
 
 def get_all_games():
-	return json.loads(redis_client.get("Games").decode("utf-8")).keys()
+	return list(json.loads(redis_client.get("Games").decode("utf-8")).keys())
 
 def create_player(name, room, hand=[]):
 	game_data = get_game_data(room)
