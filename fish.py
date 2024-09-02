@@ -97,6 +97,8 @@ def get_all_games():
 
 def create_player(name, room, hand=[]):
 	game_data = get_game_data(room)
+	if not game_data:
+		return False
 	for i in range(len(game_data["players"])):
 		if game_data["players"][i]["name"] == name:
 			return False
@@ -123,16 +125,26 @@ def create_room(room):
 			"remaining_half_suits": ["eights", "low_clubs", "low_hearts", "low_spades", "low_diamonds", "high_hearts", "high_clubs", "high_spades", "high_clubs"]
 		}
 		set_game_data(room, json_data)
+		redis_client.set(room, "exists", ex=10800) # Expires in 3 hours
 		return True
 	else:
 		return False
 
+def delete_room(room):
+	all_data = json.loads(redis_client.get("Games").decode("utf-8"))
+	del all_data[room]
+	redis_client.set("Games", json.dumps(all_data))
+
 def is_room_full(room):
 	game_data = get_game_data(room)
+	if not game_data:
+		return False
 	return len(game_data["players"]) == 6
 
 def start_game(room):
 	game_data = get_game_data(room)
+	if not game_data:
+		return False
 	if is_room_full(room):
 		hands = gen_hands()
 		for i in range(6):
@@ -146,10 +158,14 @@ def start_game(room):
 	
 def is_started(room):
 	game_data = get_game_data(room)
+	if not game_data:
+		return False
 	return game_data["started"] == "true"
 	
 def get_players(room):
 	game_data = get_game_data(room)
+	if not game_data:
+		return False
 	names = []
 	for i in range(6):
 		names.append(game_data["players"][i]["name"])
@@ -157,6 +173,8 @@ def get_players(room):
 
 def get_player_hand(room, player):
 	game_data = get_game_data(room)
+	if not game_data:
+		return False
 	for i in range(6):
 		if game_data["players"][i]["name"] == player:
 			return game_data["players"][i]["hand"]
@@ -166,6 +184,8 @@ def get_turn(room):
 
 def take_turn(room, asking, card, asked):
 	game_data = get_game_data(room)
+	if not game_data:
+		return False
 	asking_index = -1
 	asked_index = -1
 	for i in range(6):
@@ -192,6 +212,8 @@ def begin_declaring(room, player):
 
 def declare(room, half_suit, players_selected, team):
 	game_data = get_game_data(room)
+	if not game_data:
+		return False
 	game_data["declaring"] = "false"
 	game_data["declarer"] = ""
 	players_selected_indices = []
@@ -230,6 +252,8 @@ def get_remaining_half_suits(room):
 
 def get_players_cards_num(room):
 	game_data = get_game_data(room)
+	if not game_data:
+		return False
 	nums = {}
 	for i in range(6):
 		nums[game_data["players"][i]["name"]] = len(game_data["players"][i]["hand"])

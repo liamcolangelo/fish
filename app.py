@@ -40,6 +40,9 @@ def add_player():
 def find_rooms():
     if request.method == "GET":
         game_names = fish.get_all_games()
+        for name in game_names:
+            if redis_client.get(name) is None:
+                fish.delete_room(name)
         return jsonify({"processed": "true", "games": game_names})
     else:
         info = request.get_json()
