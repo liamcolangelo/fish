@@ -180,6 +180,7 @@ def take_turn(room, asking, card, asked):
 		game_data["players"][asking_index]["hand"].append(card)
 	else:
 		game_data["turn"] = asked
+	set_game_data(room, game_data)
 	
 
 def begin_declaring(room, player):
@@ -201,7 +202,7 @@ def declare(room, half_suit, players_selected, team):
 	correct = True
 	for i in range(6):
 		if not (half_suits[half_suit][i] in game_data["players"][players_selected_indices[i]]["hand"]):
-			game_data["last_move"] = "Incorrectly declared" + half_suit.replace("_", " ").capitalize()
+			game_data["last_move"] = "Incorrectly declared " + half_suit.replace("_", " ").capitalize()
 			correct = False
 			break
 	for card in half_suits[half_suit]:

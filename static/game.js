@@ -282,11 +282,6 @@ document.getElementById("half-suits-dropdown").addEventListener("change", functi
                     document.getElementById("card-choices").setAttribute("hidden", "");
                 });
             }
-            // Funny because I wanted to
-            if (document.getElementsByClassName("card-choice").length == 0) {
-                alert("You have all of the cards in the half suit, don't be stupid.");
-                document.getElementById("card-choices").setAttribute("hidden", "");
-            }
         }
     }
 });
