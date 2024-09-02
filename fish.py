@@ -119,7 +119,7 @@ def create_room(room):
 			"declaring": "false",
 			"declarer": "",
 			"last_move": "Not started",
-			"points": [0,0],
+			"score": [0,0],
 			"remaining_half_suits": ["eights", "low_clubs", "low_hearts", "low_spades", "low_diamonds", "high_hearts", "high_clubs", "high_spades", "high_clubs"]
 		}
 		set_game_data(room, json_data)
@@ -213,12 +213,12 @@ def declare(room, half_suit, players_selected, team):
 				pass
 	if correct:
 		game_data["last_move"] = "Correctly declared " + half_suit.replace("_", " ").capitalize()
-		game_data["points"][team] += 1
+		game_data["score"][team] += 1
 	else:
 		if team == 1:
-			game_data["points"][0] += 1
+			game_data["score"][0] += 1
 		else:
-			game_data["points"][1] += 1
+			game_data["score"][1] += 1
 	game_data["remaining_half_suits"].remove(half_suit)
 	set_game_data(room, game_data)
 	return correct

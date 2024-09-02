@@ -11,6 +11,6 @@
     "declaring" : "false",
     "declarer" : "",
     "last_move" : "",
-    "points" : [0,0],
+    "score" : [0,0],
     "remaining_half_suits" : ["eights", "low_clubs", "low_hearts", "low_spades", "low_diamonds", "high_hearts", "high_clubs", "high_spades", "high_clubs"]
 }
