@@ -101,7 +101,7 @@ def create_player(name, room, hand=[]):
 		"hand": hand
 	}
 	game_data["players"].append(player_data)
-	redis_client.set(room, game_data)
+	set_game_data(room, game_data)
 	return True
 	
 
