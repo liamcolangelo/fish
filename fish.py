@@ -178,6 +178,7 @@ def take_turn(room, asking, card, asked):
 	if card in game_data["players"][asked_index]["hand"]:
 		game_data["players"][asked_index]["hand"].remove(card)
 		game_data["players"][asking_index]["hand"].append(card)
+		game_data["last_move"] = asking + " got " + get_full_card_name(card) + " from " + asked
 	else:
 		game_data["turn"] = asked
 	set_game_data(room, game_data)
