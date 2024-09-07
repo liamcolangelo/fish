@@ -203,8 +203,12 @@ def take_turn(room, asking, card, asked):
 		game_data["turn"] = asked
 		game_data["last_move"] = asking + " asked " + asked + " for the " + get_full_card_name(card)
 	set_game_data(room, game_data)
-	
 
+def pass_turn(room, player):
+	game_data = get_game_data(room)
+	game_data["turn"] = player
+	set_game_data(room, game_data)
+	
 def begin_declaring(room, player):
 	game_data = get_game_data(room)
 	game_data["declaring"] = "true"
