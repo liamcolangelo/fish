@@ -20,6 +20,7 @@ const half_suits = {
 };
 // Global variables which change throughout the game
 var hand = [];
+var have_cards_left = true;
 var asked;
 var declaring = false;
 
@@ -62,6 +63,9 @@ roommates.then(function(data) {
 
 // Determines whose turn it is and updates the screen as needed
 setInterval(function () {
+    if (!have_cards_left) {
+        return;
+    }
     update_hand();
 
     var game_data = $.ajax({
@@ -167,6 +171,32 @@ setInterval(function () {
             }
         }
     });
+
+    if (document.getElementsByClassName("card").length == 0 && turn == my_name && have_cards_left && !declaring) {
+        have_cards_left = false;
+        alert("Choose a teammate to continue your turn");
+        for (var i = 0; i < 2; i++) {
+            document.getElementById(teammate_name).addEventListener("click", function() {
+                teammate_name = my_teammates[i] + "";
+                $.ajax({
+                    type: "POST",
+                    url: "/pass_turn",
+                    data: JSON.stringify([room_name, teammate_name]),
+                    contentType: "application/json",
+                    dataType: "json"
+                });
+                for (var k = 0; k < my_teammates.length; k++) {
+                    document.getElementById(my_teammates[i]).style.pointerEvents = "none";
+                }
+            });
+            document.getElementById(teammate_name).style.pointerEvents = "auto";
+        }
+        var oppponent_bubbles = document.getElementsByClassName("opponent");
+        for (var i = 0; i < oppponent_bubbles.length; i++) {
+            opponent_bubbles[i].style.pointerEvents = "none";
+        }
+        document.getElementById("declare").style.display = "none";
+    }
 }, 2500);
 
 // Allows the player to begin declaring

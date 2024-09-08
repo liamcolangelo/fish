@@ -161,6 +161,14 @@ def won():
 def lose():
     return render_template("lose.html")
 
+@app.route("/pass_turn")
+def pass_turn():
+    info = request.get_json()
+    room = info[0]
+    player = info[1]
+    fish.pass_turn(room, player)
+    return jsonify({"processed": "true"})
+
 
 # Runs the app
 if __name__ == "__main__":
