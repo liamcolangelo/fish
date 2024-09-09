@@ -131,9 +131,17 @@ def create_room(room):
 		return False
 
 def delete_room(room):
-	all_data = json.loads(redis_client.get("Games").decode("utf-8"))
-	del all_data[room]
-	redis_client.set("Games", json.dumps(all_data))
+	try:
+		all_data = json.loads(redis_client.get("Games").decode("utf-8"))
+		del all_data[room]
+		redis_client.set("Games", json.dumps(all_data))
+	except KeyError:
+		pass
+
+# Sets a room to be removed in 2 seconds
+# This removes the entry of the room name, meaning that it will eventually be removed and is no longer available.
+def kill_room(room):
+	redis_client.expire(room, 2)
 
 def is_room_full(room):
 	game_data = get_game_data(room)

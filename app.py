@@ -36,6 +36,7 @@ def find_rooms():
         for name in game_names:
             if redis_client.get(name) is None:
                 fish.delete_room(name)
+        game_names = fish.get_all_games()
         return jsonify({"processed": "true", "games": game_names})
     else:
         info = request.get_json()
@@ -169,6 +170,12 @@ def pass_turn():
     fish.pass_turn(room, player)
     return jsonify({"processed": "true"})
 
+@app.route("/delete_room")
+def delete_room():
+    info = request.get_json()
+    room = info[0]
+    fish.kill_room(room)
+    return jsonify({"processed" : "true"})
 
 # Runs the app
 if __name__ == "__main__":

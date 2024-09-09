@@ -1,4 +1,4 @@
-// TODO: publish site (remove the test game)
+// TODO: make everything fit on phone (at least in landscape)
 
 // Constants throughout game
 var room_name = localStorage.getItem("room");
