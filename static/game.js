@@ -24,6 +24,13 @@ var have_cards_left = true;
 var asked;
 var declaring = false;
 
+document.addEventListener("DOMContentLoaded", function() {
+    const screenWidth = window.screen.width;
+    const desiredWidth = 1920.0;
+    const scaleFactor = screenWidth / desiredWidth;
+    const viewportMeta = document.querySelector('meta[name="viewport"]');
+    viewportMeta.setAttribute("content", `width=${desiredWidth}, initial-scale=${scaleFactor}`);
+});
 
 // Populates the names of the others in the room
 var roommates = $.ajax({
