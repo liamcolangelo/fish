@@ -281,7 +281,7 @@ document.getElementById("half-suits-dropdown").addEventListener("change", functi
         document.getElementById("half-suit-choices").setAttribute("hidden", "");
         var previous_choices = document.getElementsByClassName("card-choice");
         
-        for (var i = 0; i < previous_choices.length; i++) {
+        for (var i = previous_choices.length - 1; i >= 0; i++) {
             previous_choices[i].remove();
         }
 
