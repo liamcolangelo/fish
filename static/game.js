@@ -1,5 +1,3 @@
-// TODO: publish site (remove the test game)
-
 // Constants throughout game
 var room_name = localStorage.getItem("room");
 var my_name = localStorage.getItem("name");
@@ -24,6 +22,13 @@ var have_cards_left = true;
 var asked;
 var declaring = false;
 
+document.addEventListener("DOMContentLoaded", function() {
+    const screenWidth = window.screen.width;
+    const desiredWidth = 1920.0;
+    const scaleFactor = screenWidth / desiredWidth;
+    const viewportMeta = document.querySelector('meta[name="viewport"]');
+    viewportMeta.setAttribute("content", `width=${desiredWidth}, initial-scale=${scaleFactor}`);
+});
 
 // Populates the names of the others in the room
 var roommates = $.ajax({
@@ -276,7 +281,7 @@ document.getElementById("half-suits-dropdown").addEventListener("change", functi
         document.getElementById("half-suit-choices").setAttribute("hidden", "");
         var previous_choices = document.getElementsByClassName("card-choice");
         
-        for (var i = 0; i < previous_choices.length; i++) {
+        for (var i = previous_choices.length - 1; i >= 0; i++) {
             previous_choices[i].remove();
         }
 

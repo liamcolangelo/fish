@@ -1,5 +1,5 @@
 # Fish (Literature) Card Game
-## Version 1
+## Version 2
 
 #### ❤ Thank you to the 41th New Jersey Governor's School in the Sciences!
 
@@ -20,3 +20,9 @@ If creating a new room, you will then be prompted to enter a name for the room
 
 ## Later developments
 #### If you feel that there is a problem you want fixed, open an issue on GitHub and I will try to take a look when I have time.
+
+## New stuff!
+* If it is a player's turn, but they have no cards, they should be able to pass to a teammate
+* Website now looks good on a phone too
+* Rooms are deleted when the games end
+* A favicon has been added

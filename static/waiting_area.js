@@ -4,6 +4,14 @@ var creator = localStorage.getItem("creator");
 var username = localStorage.getItem("name")
 var room_name = localStorage.getItem("room");
 
+document.addEventListener("DOMContentLoaded", function() {
+    const screenWidth = window.screen.width;
+    const desiredWidth = 1920.0;
+    const scaleFactor = screenWidth / desiredWidth;
+    const viewportMeta = document.querySelector('meta[name="viewport"]');
+    viewportMeta.setAttribute("content", `width=${desiredWidth}, initial-scale=${scaleFactor}`);
+});
+
 document.getElementById("start").addEventListener("click", function () {
     $.ajax({
         type: "POST",
